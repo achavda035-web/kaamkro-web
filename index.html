@@ -1,0 +1,2483 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>KaamKro Pro v3 — India ka #1 Job Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+:root{
+  --pr:#FF6B00;--pr2:#FF9500;--gn:#00875A;--gn2:#00B377;
+  --bg:#F5F7FA;--wh:#fff;
+  --tx:#1A1A2E;--tx2:#444466;--mu:#7A8099;
+  --bd:#E2E8F0;--bd2:#CBD5E1;
+  --rd:#E53E3E;--bl:#3182CE;--pu:#7C3AED;
+  --grad:linear-gradient(135deg,#FF6B00,#FF9500);
+  --grad2:linear-gradient(135deg,#00875A,#00B377);
+  --grad3:linear-gradient(135deg,#3182CE,#6366F1);
+  --sh:0 2px 14px rgba(0,0,0,.07);
+  --sh2:0 8px 28px rgba(255,107,0,.15);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans',sans-serif;background:var(--bg);color:var(--tx);overflow-x:hidden;}
+h1,h2,h3,h4{font-family:'Baloo 2',sans-serif;}
+::-webkit-scrollbar{width:6px;}::-webkit-scrollbar-thumb{background:var(--pr);border-radius:3px;}
+
+/* ── TOPBAR ── */
+#topbar{position:fixed;top:0;left:0;right:0;z-index:1000;background:#fff;border-bottom:2px solid var(--bd);display:flex;align-items:center;gap:8px;padding:0 12px;height:60px;box-shadow:0 2px 10px rgba(0,0,0,.06);}
+.logo{font-family:'Baloo 2',sans-serif;font-size:1.45rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer;flex-shrink:0;}
+.nav-links{display:flex;gap:1px;overflow-x:auto;padding:0 2px;flex:1;}
+.nb{background:none;border:none;color:var(--mu);padding:6px 8px;border-radius:7px;cursor:pointer;font-size:.72rem;font-family:'Noto Sans',sans-serif;transition:all .2s;white-space:nowrap;font-weight:600;}
+.nb:hover,.nb.active{color:var(--pr);background:#FFF3E8;}
+.nav-right{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.lang-btn{background:var(--bg);border:1.5px solid var(--bd);color:var(--tx2);padding:4px 9px;border-radius:7px;cursor:pointer;font-size:.72rem;font-weight:700;}
+.notif-btn{position:relative;background:none;border:none;font-size:1.2rem;cursor:pointer;padding:4px;}
+.notif-badge{position:absolute;top:0;right:0;background:var(--rd);color:#fff;border-radius:50%;width:16px;height:16px;font-size:.55rem;font-weight:700;display:flex;align-items:center;justify-content:center;}
+.btn-l{background:none;border:2px solid var(--bd2);color:var(--tx2);padding:5px 11px;border-radius:7px;cursor:pointer;font-size:.75rem;font-weight:700;}
+.btn-l:hover{border-color:var(--pr);color:var(--pr);}
+.btn-r{background:var(--grad);border:none;color:#fff;padding:6px 12px;border-radius:7px;cursor:pointer;font-size:.75rem;font-weight:700;}
+.hbg{display:none;background:none;border:none;color:var(--tx);font-size:1.3rem;cursor:pointer;padding:4px;}
+
+/* MOBILE NAV */
+#mNav{display:none;position:fixed;top:60px;left:0;right:0;z-index:999;background:#fff;border-bottom:2px solid var(--bd);padding:8px;flex-direction:column;gap:2px;max-height:80vh;overflow-y:auto;box-shadow:0 4px 20px rgba(0,0,0,.1);}
+#mNav .nb{text-align:left;padding:10px 14px;font-size:.86rem;}
+
+/* BOTTOM NAV (mobile) */
+#bottomNav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:998;background:#fff;border-top:2px solid var(--bd);display:none;justify-content:space-around;padding:6px 0;box-shadow:0 -4px 12px rgba(0,0,0,.06);}
+.bnnb{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;font-size:.58rem;color:var(--mu);font-family:'Noto Sans',sans-serif;font-weight:700;padding:4px 8px;border-radius:8px;}
+.bnnb.active,.bnnb:hover{color:var(--pr);}
+.bnnb span:first-child{font-size:1.1rem;}
+.unread-dot{background:var(--rd);color:#fff;border-radius:50%;width:14px;height:14px;font-size:.5rem;font-weight:700;display:inline-flex;align-items:center;justify-content:center;margin-left:2px;}
+
+/* NOTIFICATIONS PANEL */
+#notifPanel{display:none;position:fixed;top:60px;right:12px;z-index:2000;background:#fff;border:2px solid var(--bd);border-radius:14px;width:320px;max-height:420px;overflow-y:auto;box-shadow:0 12px 40px rgba(0,0,0,.12);}
+.notif-head{padding:14px 16px;border-bottom:2px solid var(--bd);display:flex;justify-content:space-between;align-items:center;font-weight:700;}
+.notif-item{padding:12px 16px;border-bottom:1px solid var(--bd);display:flex;gap:10px;cursor:pointer;transition:background .2s;}
+.notif-item:hover{background:#FFF8F3;}
+.notif-icon{font-size:1.3rem;flex-shrink:0;}
+.notif-title{font-size:.82rem;font-weight:700;margin-bottom:2px;}
+.notif-sub{font-size:.72rem;color:var(--mu);}
+.notif-item.unread{background:#FFF3E8;}
+
+/* APP */
+#app{padding-top:60px;padding-bottom:0;}
+.sec{display:none;min-height:calc(100vh - 60px);}
+.sec.active{display:block;animation:fi .25s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── HERO ── */
+#hero{background:linear-gradient(135deg,#FFF8F3 0%,#FFF0E6 50%,#EFF6FF 100%);padding:52px 20px 40px;text-align:center;border-bottom:2px solid var(--bd);position:relative;overflow:hidden;}
+#hero::before{content:'';position:absolute;top:-80px;right:-80px;width:350px;height:350px;background:radial-gradient(circle,rgba(255,107,0,.09),transparent 70%);border-radius:50%;}
+.live-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(229,62,62,.08);border:1.5px solid rgba(229,62,62,.25);border-radius:20px;padding:4px 12px;font-size:.72rem;color:var(--rd);margin-bottom:12px;font-weight:700;}
+.live-dot{width:7px;height:7px;background:var(--rd);border-radius:50%;animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+#hero h1{font-size:clamp(1.7rem,5vw,3.2rem);font-weight:800;line-height:1.15;margin-bottom:11px;}
+.hl{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+#hero p{font-size:.9rem;color:var(--tx2);max-width:460px;margin:0 auto 22px;}
+
+/* HERO ACTION BUTTONS */
+.hero-action-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin:18px auto 22px;max-width:720px;}
+.sarkari-hero-btn,.jobs-hero-btn{display:flex;align-items:center;gap:14px;padding:16px 22px;border-radius:16px;cursor:pointer;border:none;transition:all .25s;text-align:left;min-width:300px;flex:1;max-width:340px;position:relative;overflow:hidden;}
+.sarkari-hero-btn{background:var(--grad2);color:#fff;box-shadow:0 6px 24px rgba(0,135,90,.28);}
+.sarkari-hero-btn:hover{transform:translateY(-3px);box-shadow:0 10px 32px rgba(0,135,90,.4);}
+.jobs-hero-btn{background:var(--grad);color:#fff;box-shadow:0 6px 24px rgba(255,107,0,.28);}
+.jobs-hero-btn:hover{transform:translateY(-3px);box-shadow:0 10px 32px rgba(255,107,0,.4);}
+.shb-icon{font-size:2rem;flex-shrink:0;}
+.shb-text{flex:1;}
+.shb-main{font-family:'Baloo 2',sans-serif;font-size:1.05rem;font-weight:800;margin-bottom:3px;}
+.shb-sub{font-size:.7rem;opacity:.88;font-weight:500;}
+.shb-arrow{font-size:1.3rem;opacity:.8;flex-shrink:0;}
+@media(max-width:600px){.hero-action-row{flex-direction:column;align-items:stretch;max-width:380px;}.sarkari-hero-btn,.jobs-hero-btn{max-width:100%;min-width:0;}}
+
+/* VISITOR TRACKING BADGE */
+.visitor-live{display:inline-flex;align-items:center;gap:6px;background:rgba(49,130,206,.09);border:1.5px solid rgba(49,130,206,.2);border-radius:20px;padding:4px 12px;font-size:.7rem;color:var(--bl);font-weight:700;margin-bottom:10px;}
+.visitor-dot{width:6px;height:6px;background:var(--gn);border-radius:50%;animation:blink 1.5s infinite;}
+
+/* SEARCH */
+.sbox{max-width:680px;margin:0 auto 14px;}
+.smain{display:flex;background:#fff;border:2px solid var(--bd2);border-radius:13px;overflow:hidden;box-shadow:var(--sh);margin-bottom:7px;}
+.smain:focus-within{border-color:var(--pr);}
+.smain input{flex:1;background:none;border:none;color:var(--tx);padding:12px 15px;font-size:.88rem;outline:none;font-family:'Noto Sans',sans-serif;}
+.smain input::placeholder{color:var(--mu);}
+.sgo{background:var(--grad);border:none;color:#fff;padding:0 18px;cursor:pointer;font-weight:700;font-size:.88rem;white-space:nowrap;}
+.srow{display:flex;gap:6px;flex-wrap:wrap;}
+.ssel{flex:1;min-width:110px;background:#fff;border:2px solid var(--bd2);color:var(--tx2);padding:7px 9px;border-radius:8px;font-size:.76rem;font-family:'Noto Sans',sans-serif;cursor:pointer;}
+.ssel:focus{outline:none;border-color:var(--pr);}
+.stags{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;margin-top:8px;}
+.stag{background:#fff;border:1.5px solid var(--bd);color:var(--tx2);padding:3px 10px;border-radius:18px;font-size:.72rem;cursor:pointer;font-weight:600;transition:all .2s;}
+.stag:hover{border-color:var(--pr);color:var(--pr);background:#FFF3E8;}
+
+/* STATS */
+.stats-r{display:flex;justify-content:center;background:#fff;border-radius:12px;border:2px solid var(--bd);max-width:620px;margin:0 auto 36px;box-shadow:var(--sh);}
+.stat{padding:13px 20px;text-align:center;position:relative;flex:1;}
+.stat:not(:last-child)::after{content:'';position:absolute;right:0;top:20%;height:60%;width:1px;background:var(--bd);}
+.snum{font-family:'Baloo 2',sans-serif;font-size:1.6rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.slbl{font-size:.66rem;color:var(--mu);font-weight:600;}
+
+/* SALARY PREDICTOR */
+.sal-pred{background:linear-gradient(135deg,#EFF6FF,#DBEAFE);border:2px solid rgba(49,130,206,.2);border-radius:14px;padding:20px 22px;margin-bottom:0;}
+.sal-pred h3{font-size:1rem;font-weight:800;margin-bottom:4px;color:var(--tx);}
+.sal-pred p{font-size:.78rem;color:var(--tx2);margin-bottom:14px;}
+.sal-inputs{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:12px;}
+.sal-result{background:#fff;border:2px solid rgba(49,130,206,.3);border-radius:10px;padding:14px;text-align:center;}
+.sal-amount{font-family:'Baloo 2',sans-serif;font-size:2rem;font-weight:800;color:var(--bl);}
+.sal-range{font-size:.75rem;color:var(--mu);margin-top:3px;}
+
+/* SECTIONS */
+.wrap{padding:0 20px 38px;max-width:1100px;margin:0 auto;}
+.stitle{font-size:1.25rem;font-weight:800;margin-bottom:14px;color:var(--tx);display:flex;align-items:center;gap:8px;}
+.stitle-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:7px;}
+.bcnt{font-size:.78rem;color:var(--mu);background:#F0F4FF;padding:3px 11px;border-radius:18px;font-weight:700;}
+.live-ind{display:inline-flex;align-items:center;gap:4px;font-size:.7rem;color:var(--rd);font-weight:700;background:rgba(229,62,62,.07);padding:3px 9px;border-radius:10px;}
+
+/* CATS */
+.cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px;}
+.cat{background:#fff;border:2px solid var(--bd);border-radius:11px;padding:14px 8px;text-align:center;cursor:pointer;transition:all .22s;box-shadow:var(--sh);}
+.cat:hover{border-color:var(--pr);transform:translateY(-3px);box-shadow:var(--sh2);}
+.ci{font-size:1.6rem;margin-bottom:5px;}.cn{font-size:.75rem;font-weight:700;}.cc{font-size:.65rem;color:var(--pr);font-weight:600;}
+
+/* FILTER BAR */
+.fbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:13px;align-items:center;}
+.fi{flex:1;min-width:150px;background:#fff;border:2px solid var(--bd2);color:var(--tx);padding:7px 11px;border-radius:8px;font-size:.79rem;font-family:'Noto Sans',sans-serif;outline:none;}
+.fi:focus{border-color:var(--pr);}
+.fs{background:#fff;border:2px solid var(--bd2);color:var(--tx2);padding:7px 9px;border-radius:8px;font-size:.76rem;cursor:pointer;font-family:'Noto Sans',sans-serif;}
+.fs:focus{outline:none;border-color:var(--pr);}
+.fclr{background:none;border:2px solid var(--bd2);color:var(--mu);padding:7px 12px;border-radius:8px;cursor:pointer;font-size:.76rem;font-weight:700;}
+.fclr:hover{border-color:var(--rd);color:var(--rd);}
+
+/* CATEGORY TABS */
+.cattabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;}
+.cattab{background:#fff;border:1.5px solid var(--bd);color:var(--tx2);padding:5px 11px;border-radius:7px;cursor:pointer;font-size:.72rem;font-weight:700;transition:all .2s;}
+.cattab.active,.cattab:hover{background:var(--grad);color:#fff;border-color:var(--pr);}
+
+/* SOURCE TABS */
+.src-tabs{display:flex;gap:6px;margin-bottom:14px;}
+.srctab{background:#fff;border:2px solid var(--bd);color:var(--tx2);padding:7px 14px;border-radius:8px;cursor:pointer;font-size:.78rem;font-weight:700;display:flex;align-items:center;gap:5px;transition:all .2s;}
+.srctab.active{border-color:var(--rd);color:var(--rd);background:rgba(229,62,62,.06);}
+.srctab.local.active{border-color:var(--bl);color:var(--bl);background:rgba(49,130,206,.06);}
+
+/* JOB CARDS */
+.jgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:11px;}
+.jcard{background:#fff;border:2px solid var(--bd);border-radius:12px;padding:15px;cursor:pointer;transition:all .22s;position:relative;overflow:hidden;box-shadow:var(--sh);}
+.jcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad);transform:scaleX(0);transform-origin:left;transition:.3s;}
+.jcard:hover::before{transform:scaleX(1);}
+.jcard:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(255,107,0,.1);border-color:rgba(255,107,0,.25);}
+.jcard.live-card{border-color:rgba(229,62,62,.2);}
+.jcard.live-card::before{background:linear-gradient(135deg,var(--rd),#FF6B6B);}
+.jhead{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px;}
+.jlogo{width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,#FFF3E8,#FFE0CC);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.jlogo.live{background:linear-gradient(135deg,#FFF0F0,#FFE0E0);}
+.jtitle{font-size:.88rem;font-weight:700;margin-bottom:1px;line-height:1.3;}
+.jco{font-size:.73rem;color:var(--mu);font-weight:600;}
+.jtags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:9px;}
+.jt{padding:2px 7px;border-radius:18px;font-size:.66rem;background:#F0F4FF;color:var(--tx2);font-weight:700;}
+.jt.ft{color:var(--gn);background:rgba(0,135,90,.07);}
+.jt.rm{color:var(--bl);background:rgba(49,130,206,.07);}
+.jt.ug{color:var(--rd);background:rgba(229,62,62,.07);}
+.jt.lv{color:var(--rd);background:rgba(229,62,62,.07);}
+.jfoot{display:flex;align-items:center;justify-content:space-between;}
+.jsal{font-weight:700;color:var(--pr);font-size:.84rem;}
+.jfoot-right{display:flex;gap:5px;align-items:center;}
+.save-btn{background:none;border:1.5px solid var(--bd);color:var(--mu);padding:5px 8px;border-radius:7px;cursor:pointer;font-size:.75rem;transition:all .2s;}
+.save-btn:hover,.save-btn.saved{border-color:var(--pr);color:var(--pr);}
+.abtn{background:var(--grad);border:none;color:#fff;padding:5px 13px;border-radius:7px;cursor:pointer;font-size:.74rem;font-weight:700;}
+.jbdg{position:absolute;top:9px;right:9px;font-size:.58rem;font-weight:700;padding:2px 6px;border-radius:7px;}
+.jbdg.featured{background:#FEF3C7;color:#92400E;}
+.jbdg.hot{background:#FEE2E2;color:#991B1B;}
+.jbdg.new{background:#D1FAE5;color:#065F46;}
+.jbdg.live{background:#FEE2E2;color:#991B1B;}
+.lmore{display:block;margin:18px auto 0;background:#fff;border:2px solid var(--bd2);color:var(--tx2);padding:8px 30px;border-radius:8px;cursor:pointer;font-size:.82rem;font-weight:700;}
+.lmore:hover{border-color:var(--pr);color:var(--pr);}
+
+/* GOVT */
+.govt-wrap{max-width:1100px;margin:0 auto;padding:20px 20px;}
+.galert{background:linear-gradient(135deg,#FFF8F3,#FFF3E8);border:2px solid rgba(255,107,0,.2);border-radius:12px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.auto-timer{background:rgba(49,130,206,.07);border:1.5px solid rgba(49,130,206,.2);border-radius:8px;padding:6px 12px;font-size:.75rem;color:var(--bl);font-weight:700;display:flex;align-items:center;gap:6px;}
+.gtabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px;}
+.gtab{background:#fff;border:2px solid var(--bd);color:var(--tx2);padding:5px 12px;border-radius:7px;cursor:pointer;font-size:.74rem;font-weight:700;transition:all .2s;}
+.gtab.active,.gtab:hover{background:var(--grad2);color:#fff;border-color:var(--gn);}
+.state-tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;}
+.stab{background:#fff;border:1.5px solid var(--bd);color:var(--tx2);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:.7rem;font-weight:700;transition:all .2s;}
+.stab.active,.stab:hover{background:var(--grad3);color:#fff;border-color:var(--bl);}
+.ggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(275px,1fr));gap:11px;}
+.gcard{background:#fff;border:2px solid var(--bd);border-radius:11px;padding:15px;cursor:pointer;transition:all .2s;box-shadow:var(--sh);}
+.gcard:hover{border-color:var(--gn);transform:translateY(-2px);}
+.gorg{font-size:.7rem;color:var(--gn);font-weight:700;margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px;}
+.gcard h3{font-size:.86rem;font-weight:700;margin-bottom:8px;}
+.gmeta{display:flex;gap:6px;flex-wrap:wrap;}
+.gmeta span{font-size:.68rem;font-weight:600;background:var(--bg);padding:2px 7px;border-radius:16px;border:1px solid var(--bd);}
+.gdl{color:var(--rd)!important;border-color:rgba(229,62,62,.2)!important;background:rgba(229,62,62,.05)!important;}
+.nbtn{background:var(--grad2);border:none;color:#fff;padding:5px 12px;border-radius:6px;cursor:pointer;font-size:.72rem;font-weight:700;}
+
+/* MAP */
+.map-wrap{max-width:1100px;margin:0 auto;padding:20px 20px;}
+.map-controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center;}
+#leafletMap{height:440px;border-radius:13px;border:2px solid var(--bd);overflow:hidden;box-shadow:var(--sh);}
+.map-jobs-list{margin-top:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;}
+.map-stat-row{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+.mstat{background:#fff;border:2px solid var(--bd);border-radius:9px;padding:10px 16px;display:flex;align-items:center;gap:8px;box-shadow:var(--sh);}
+.mstat-num{font-family:'Baloo 2',sans-serif;font-size:1.3rem;font-weight:800;color:var(--pr);}
+.mstat-lbl{font-size:.7rem;color:var(--mu);font-weight:600;}
+
+/* CHAT */
+.ch-wrap{max-width:860px;margin:0 auto;padding:20px 20px;}
+.chbox{display:grid;grid-template-columns:240px 1fr;background:#fff;border:2px solid var(--bd);border-radius:13px;overflow:hidden;height:500px;box-shadow:var(--sh);}
+.chsb{border-right:2px solid var(--bd);overflow-y:auto;background:#F8FAFF;}
+.chsbh{padding:12px;border-bottom:2px solid var(--bd);font-weight:700;font-size:.84rem;display:flex;justify-content:space-between;align-items:center;}
+.chitem{padding:10px 12px;display:flex;gap:8px;cursor:pointer;border-bottom:1px solid var(--bd);transition:background .15s;}
+.chitem:hover,.chitem.active{background:#fff;}
+.chitem.unread-item{background:#FFF8F3;}
+.chav{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;}
+.chn{font-size:.8rem;font-weight:700;}.chp{font-size:.68rem;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.chunr{background:var(--pr);color:#fff;border-radius:8px;font-size:.58rem;font-weight:700;padding:2px 5px;margin-left:auto;align-self:flex-start;}
+.chmain{display:flex;flex-direction:column;}
+.chhdr{padding:11px 14px;border-bottom:2px solid var(--bd);display:flex;align-items:center;gap:8px;background:#fff;}
+.chmsgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background:#F8FAFF;}
+.msg{max-width:72%;padding:8px 12px;border-radius:11px;font-size:.8rem;line-height:1.5;}
+.msg.them{background:#fff;align-self:flex-start;border:1.5px solid var(--bd);border-bottom-left-radius:3px;}
+.msg.me{background:var(--grad);align-self:flex-end;color:#fff;border-bottom-right-radius:3px;}
+.mtime{font-size:.59rem;color:var(--mu);margin-top:2px;}
+.chinp{border-top:2px solid var(--bd);padding:10px;display:flex;gap:6px;background:#fff;}
+.chinp input{flex:1;background:var(--bg);border:2px solid var(--bd);color:var(--tx);padding:8px 11px;border-radius:8px;font-family:'Noto Sans',sans-serif;outline:none;font-size:.82rem;}
+.chinp input:focus{border-color:var(--pr);}
+.sbtn{background:var(--grad);border:none;color:#fff;padding:8px 13px;border-radius:8px;cursor:pointer;}
+
+/* RESUME */
+.rwrap{max-width:1100px;margin:0 auto;padding:20px 20px;display:grid;grid-template-columns:370px 1fr;gap:18px;}
+.rform{background:#fff;border:2px solid var(--bd);border-radius:13px;padding:18px;box-shadow:var(--sh);}
+.flbl{font-size:.73rem;font-weight:700;color:var(--pr);margin:13px 0 7px;padding-bottom:4px;border-bottom:2px solid #FFF3E8;text-transform:uppercase;letter-spacing:.4px;}
+.fg{margin-bottom:10px;}
+.fg label{display:block;font-size:.74rem;font-weight:700;color:var(--tx2);margin-bottom:3px;}
+.fg input,.fg textarea,.fg select{width:100%;background:var(--bg);border:2px solid var(--bd);color:var(--tx);padding:7px 10px;border-radius:7px;font-size:.8rem;font-family:'Noto Sans',sans-serif;outline:none;}
+.fg input:focus,.fg textarea:focus{border-color:var(--pr);background:#fff;}
+.fg textarea{resize:vertical;min-height:58px;}
+.aibtn{width:100%;background:var(--grad);border:none;color:#fff;padding:10px;border-radius:8px;cursor:pointer;font-size:.88rem;font-weight:700;margin-top:5px;}
+.aibtn:disabled{opacity:.5;cursor:not-allowed;}
+.rprev{background:#fff;border:2px solid var(--bd);border-radius:13px;overflow:hidden;box-shadow:var(--sh);}
+.rtool{padding:11px 16px;border-bottom:2px solid var(--bd);display:flex;justify-content:space-between;align-items:center;background:#F8FAFF;}
+.dlbtn{background:var(--grad2);border:none;color:#fff;padding:5px 13px;border-radius:6px;cursor:pointer;font-size:.76rem;font-weight:700;}
+#resumeOut{padding:22px;min-height:360px;font-size:.84rem;line-height:1.7;}
+.res-score{background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border:2px solid rgba(0,135,90,.2);border-radius:10px;padding:12px 14px;margin-bottom:10px;}
+.score-bar-bg{background:#E2E8F0;border-radius:6px;height:10px;margin-top:6px;overflow:hidden;}
+.score-bar-fill{height:100%;border-radius:6px;background:var(--grad2);transition:width .5s;}
+.ldots{display:flex;gap:6px;align-items:center;justify-content:center;height:80px;}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--pr);animation:bnc .6s ease-in-out infinite;}
+.dot:nth-child(2){animation-delay:.1s;}.dot:nth-child(3){animation-delay:.2s;}
+@keyframes bnc{0%,100%{transform:translateY(0);}50%{transform:translateY(-9px);}}
+
+/* PROFILE */
+.prof-wrap{max-width:900px;margin:0 auto;padding:20px 20px;display:grid;grid-template-columns:280px 1fr;gap:16px;}
+.prof-card{background:#fff;border:2px solid var(--bd);border-radius:13px;padding:20px;text-align:center;box-shadow:var(--sh);}
+.prof-av{width:80px;height:80px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:2.2rem;margin:0 auto 10px;}
+.prof-name{font-size:1.1rem;font-weight:800;margin-bottom:3px;}
+.prof-title{font-size:.8rem;color:var(--mu);margin-bottom:10px;}
+.prof-badge{background:linear-gradient(135deg,#FEF3C7,#FDE68A);border:1.5px solid #F59E0B;border-radius:8px;padding:4px 10px;font-size:.72rem;font-weight:700;color:#92400E;display:inline-block;margin-bottom:12px;}
+.prof-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;}
+.pstat{background:var(--bg);border-radius:8px;padding:9px;text-align:center;}
+.pstat-num{font-family:'Baloo 2',sans-serif;font-size:1.3rem;font-weight:800;color:var(--pr);}
+.pstat-lbl{font-size:.62rem;color:var(--mu);font-weight:600;}
+.skill-tags{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-bottom:14px;}
+.skill-tag{background:linear-gradient(135deg,#FFF3E8,#FFE0CC);border:1.5px solid rgba(255,107,0,.2);padding:3px 10px;border-radius:18px;font-size:.7rem;font-weight:700;color:var(--pr);}
+.saved-wrap{background:#fff;border:2px solid var(--bd);border-radius:13px;padding:18px;box-shadow:var(--sh);}
+.apphist{margin-top:14px;}
+.approw{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--bd);}
+.approw:last-child{border:none;}
+.app-av{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#FFF3E8,#FFE0CC);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;}
+.app-n{font-size:.8rem;font-weight:700;}.app-r{font-size:.68rem;color:var(--mu);}
+.app-s{margin-left:auto;padding:2px 8px;border-radius:9px;font-size:.64rem;font-weight:700;}
+.app-s.sh{background:rgba(0,135,90,.1);color:var(--gn);}
+.app-s.new{background:rgba(49,130,206,.1);color:var(--bl);}
+.app-s.rj{background:rgba(229,62,62,.1);color:var(--rd);}
+
+/* DASHBOARD */
+.dwrap{max-width:1100px;margin:0 auto;padding:20px 20px;}
+.kgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:11px;margin-bottom:18px;}
+.kpi{background:#fff;border:2px solid var(--bd);border-radius:11px;padding:16px;position:relative;overflow:hidden;box-shadow:var(--sh);}
+.kpi::before{content:'';position:absolute;top:0;left:0;bottom:0;width:4px;border-radius:2px;}
+.kpi.o::before{background:var(--grad);}.kpi.g::before{background:var(--grad2);}.kpi.b::before{background:var(--grad3);}.kpi.gd::before{background:linear-gradient(135deg,#D97706,#F59E0B);}
+.knum{font-family:'Baloo 2',sans-serif;font-size:1.8rem;font-weight:800;}.klbl{font-size:.72rem;color:var(--mu);font-weight:600;}.kdlt{font-size:.67rem;font-weight:700;margin-top:3px;color:var(--gn);}
+.dgrid{display:grid;grid-template-columns:1fr 280px;gap:14px;}
+.dc{background:#fff;border:2px solid var(--bd);border-radius:11px;padding:16px;box-shadow:var(--sh);}
+.dc h3{font-size:.86rem;font-weight:700;margin-bottom:11px;}
+.mini-chart{display:flex;align-items:flex-end;gap:4px;height:60px;margin-bottom:14px;}
+.bar{background:var(--grad);border-radius:3px 3px 0 0;flex:1;min-width:12px;transition:height .3s;}
+.aitem{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--bd);}
+.aitem:last-child{border:none;}
+.aav{width:32px;height:32px;border-radius:7px;background:linear-gradient(135deg,#FFF3E8,#FFE0CC);display:flex;align-items:center;justify-content:center;font-size:.88rem;}
+.an{font-size:.8rem;font-weight:700;}.ar{font-size:.68rem;color:var(--mu);}
+.ast{margin-left:auto;padding:2px 7px;border-radius:9px;font-size:.63rem;font-weight:700;}
+.ast.new{background:rgba(49,130,206,.1);color:var(--bl);}
+.ast.sh{background:rgba(0,135,90,.1);color:var(--gn);}
+.ast.rj{background:rgba(229,62,62,.1);color:var(--rd);}
+.br{display:flex;align-items:center;gap:7px;font-size:.72rem;margin-bottom:6px;}
+.brl{width:55px;color:var(--mu);text-align:right;flex-shrink:0;font-weight:600;}
+.brbg{flex:1;background:var(--bg);border-radius:3px;height:8px;overflow:hidden;}
+.brf{height:100%;border-radius:3px;background:var(--grad);}
+.brv{width:22px;color:var(--pr);font-weight:700;}
+.funnel{display:flex;flex-direction:column;gap:5px;}
+.funnel-row{display:flex;align-items:center;gap:8px;font-size:.74rem;}
+.funnel-bar{height:22px;border-radius:4px;display:flex;align-items:center;padding:0 8px;color:#fff;font-weight:700;font-size:.68rem;transition:width .4s;}
+
+/* POST JOB */
+.pwrap{max-width:740px;margin:0 auto;padding:20px 20px;}
+.pcard{background:#fff;border:2px solid var(--bd);border-radius:13px;padding:22px;box-shadow:var(--sh);}
+.itip{background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border:2px solid rgba(0,135,90,.15);border-radius:8px;padding:10px 13px;margin-bottom:14px;font-size:.78rem;color:var(--gn);font-weight:600;}
+.ptips{background:linear-gradient(135deg,#EFF6FF,#DBEAFE);border:2px solid rgba(49,130,206,.15);border-radius:10px;padding:14px;margin-top:14px;}
+.ptips h4{font-size:.82rem;font-weight:700;margin-bottom:8px;color:var(--bl);}
+.ptips ul{list-style:none;display:flex;flex-direction:column;gap:5px;}
+.ptips li{font-size:.76rem;color:var(--tx2);}
+.ptips li::before{content:'✅ ';}
+.f2c{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.pcards{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:14px;}
+.pc{border:2px solid var(--bd);border-radius:10px;padding:12px;cursor:pointer;transition:all .2s;text-align:center;background:#fff;}
+.pc:hover,.pc.sel{border-color:var(--pr);background:#FFF8F3;}
+.pcn{font-weight:700;margin-bottom:2px;font-size:.82rem;}.pcp{font-family:'Baloo 2',sans-serif;font-size:1.3rem;font-weight:800;color:var(--pr);}.pcd{font-size:.66rem;color:var(--mu);margin-top:2px;}
+.pbtn{width:100%;background:var(--grad);border:none;color:#fff;padding:11px;border-radius:8px;cursor:pointer;font-size:.88rem;font-weight:700;margin-top:12px;}
+.inp{width:100%;background:var(--bg);border:2px solid var(--bd);color:var(--tx);padding:7px 10px;border-radius:7px;font-size:.78rem;font-family:'Noto Sans',sans-serif;outline:none;}
+.inp:focus{border-color:var(--pr);background:#fff;}
+.flbl{font-size:.72rem;font-weight:700;color:var(--pr);margin:12px 0 7px;padding-bottom:4px;border-bottom:2px solid #FFF3E8;text-transform:uppercase;letter-spacing:.4px;}
+
+/* PREMIUM */
+.pmwrap{max-width:820px;margin:0 auto;padding:20px 20px;text-align:center;}
+.plgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px;}
+.plbox{background:#fff;border:2px solid var(--bd);border-radius:13px;padding:22px 16px;position:relative;box-shadow:var(--sh);text-align:left;}
+.plbox:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,.09);}
+.plbox.pop{border-color:var(--pr);background:linear-gradient(135deg,#FFF8F3,#FFF3E8);}
+.pbdg{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--grad);color:#fff;padding:2px 12px;border-radius:9px;font-size:.66rem;font-weight:700;white-space:nowrap;}
+.plbox h3{font-size:.92rem;font-weight:800;margin-bottom:4px;}.plp{font-family:'Baloo 2',sans-serif;font-size:1.9rem;font-weight:800;color:var(--pr);}
+.plp span{font-size:.8rem;font-weight:400;color:var(--mu);}
+.plf{list-style:none;margin:12px 0;display:flex;flex-direction:column;gap:5px;}
+.plf li{font-size:.76rem;display:flex;gap:6px;align-items:flex-start;color:var(--tx2);}
+.plf li::before{content:'✓';color:var(--gn);font-weight:700;flex-shrink:0;}
+.plf li.no{color:var(--mu);}.plf li.no::before{content:'✗';color:var(--bd2);}
+.ubtn{width:100%;background:var(--grad);border:none;color:#fff;padding:10px;border-radius:8px;cursor:pointer;font-weight:700;font-size:.8rem;}
+.ubtn.out{background:#fff;border:2px solid var(--bd2);color:var(--tx2);}
+
+/* ADS */
+.awrap{max-width:960px;margin:0 auto;padding:20px 20px;}
+.apks{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:11px;margin-bottom:22px;}
+.apk{background:#fff;border:2px solid var(--bd);border-radius:12px;padding:17px;cursor:pointer;transition:all .2s;text-align:center;box-shadow:var(--sh);}
+.apk:hover{border-color:var(--pr);transform:translateY(-3px);box-shadow:var(--sh2);}
+.aico{font-size:1.7rem;margin-bottom:7px;}.apk h3{font-size:.83rem;font-weight:700;margin-bottom:2px;}.apr{color:var(--pr);font-weight:700;font-size:.88rem;margin-bottom:2px;}.apk p{font-size:.7rem;color:var(--mu);}
+.apk-est{font-size:.68rem;color:var(--gn);font-weight:600;margin-top:3px;}
+.book-btn{background:var(--grad);border:none;color:#fff;padding:5px 12px;border-radius:6px;cursor:pointer;font-size:.72rem;font-weight:700;margin-top:7px;}
+
+/* PROMO */
+.promo{border-radius:13px;padding:20px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;border:2px solid;}
+.plbl{font-size:.7rem;font-weight:700;margin-bottom:3px;text-transform:uppercase;letter-spacing:.4px;}
+.promo h2{font-size:1.3rem;margin-bottom:4px;}.promo p{font-size:.8rem;color:var(--tx2);}
+.prbtn{border:none;color:#fff;padding:9px 20px;border-radius:8px;cursor:pointer;font-size:.8rem;font-weight:700;}
+
+/* ADMIN */
+#adminSection{background:var(--bg);}
+.admin-wrap{max-width:1200px;margin:0 auto;padding:20px 20px;}
+.admin-topbar{background:#fff;border:2px solid var(--bd);border-radius:12px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;box-shadow:var(--sh);}
+.admin-title{font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.admin-nav{display:flex;gap:5px;flex-wrap:wrap;}
+.anav{background:var(--bg);border:2px solid var(--bd);color:var(--tx2);padding:5px 11px;border-radius:7px;cursor:pointer;font-size:.74rem;font-weight:700;transition:all .2s;}
+.anav.active,.anav:hover{background:var(--grad);color:#fff;border-color:var(--pr);}
+.admin-sec{display:none;}.admin-sec.active{display:block;animation:fi .2s ease;}
+.astat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:18px;}
+.astat{background:#fff;border:2px solid var(--bd);border-radius:10px;padding:14px;text-align:center;box-shadow:var(--sh);}
+.astat-num{font-family:'Baloo 2',sans-serif;font-size:1.7rem;font-weight:800;color:var(--pr);}
+.astat-lbl{font-size:.68rem;color:var(--mu);font-weight:600;margin-top:1px;}
+.atbl{width:100%;border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden;box-shadow:var(--sh);}
+.atbl th{background:linear-gradient(135deg,#FFF3E8,#FFF8F3);padding:10px 12px;font-size:.75rem;font-weight:700;text-align:left;border-bottom:2px solid var(--bd);}
+.atbl td{padding:9px 12px;font-size:.77rem;color:var(--tx2);border-bottom:1px solid var(--bd);vertical-align:middle;}
+.atbl tr:last-child td{border:none;}.atbl tr:hover td{background:#FFF8F3;}
+.tbdg{padding:2px 7px;border-radius:7px;font-size:.63rem;font-weight:700;}
+.tbdg.live{background:#D1FAE5;color:#065F46;}.tbdg.pending{background:#FEF3C7;color:#92400E;}.tbdg.closed{background:#FEE2E2;color:#991B1B;}
+.edit-btn{background:var(--grad3);border:none;color:#fff;padding:3px 9px;border-radius:5px;cursor:pointer;font-size:.67rem;font-weight:700;margin-right:3px;}
+.del-btn{background:#FEE2E2;border:none;color:var(--rd);padding:3px 9px;border-radius:5px;cursor:pointer;font-size:.67rem;font-weight:700;}
+.add-btn{background:var(--grad);border:none;color:#fff;padding:7px 16px;border-radius:7px;cursor:pointer;font-size:.77rem;font-weight:700;margin-bottom:12px;}
+.aform{background:#fff;border:2px solid var(--bd);border-radius:11px;padding:18px;margin-bottom:16px;box-shadow:var(--sh);}
+.aform h3{font-size:.9rem;font-weight:700;margin-bottom:12px;}
+.aform-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:9px;}
+.asave{background:var(--grad);border:none;color:#fff;padding:8px 20px;border-radius:7px;cursor:pointer;font-size:.8rem;font-weight:700;margin-top:9px;}
+.acancel{background:var(--bg);border:2px solid var(--bd2);color:var(--mu);padding:8px 16px;border-radius:7px;cursor:pointer;font-size:.8rem;font-weight:700;margin-top:9px;margin-left:6px;}
+.sset-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.scard{background:#fff;border:2px solid var(--bd);border-radius:11px;padding:16px;box-shadow:var(--sh);}
+.scard h3{font-size:.87rem;font-weight:700;margin-bottom:11px;}
+.tog{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--bd);}
+.tog:last-child{border:none;}.tog label{font-size:.79rem;color:var(--tx2);font-weight:600;}
+.toggle{position:relative;width:36px;height:19px;}
+.toggle input{opacity:0;width:0;height:0;}
+.tsl{position:absolute;cursor:pointer;inset:0;background:#ccc;border-radius:19px;transition:.3s;}
+.tsl::before{content:'';position:absolute;width:13px;height:13px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s;}
+input:checked+.tsl{background:var(--pr);}input:checked+.tsl::before{transform:translateX(17px);}
+
+/* ADMIN LOGIN */
+#adminLogin{display:none;position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#FFF8F3,#FFF3E8);align-items:center;justify-content:center;}
+#adminLogin.open{display:flex;}
+.alobx{background:#fff;border:2px solid var(--bd);border-radius:16px;padding:32px;max-width:380px;width:92%;box-shadow:0 20px 55px rgba(0,0,0,.12);text-align:center;}
+
+/* MODAL */
+#modal{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.35);backdrop-filter:blur(4px);align-items:center;justify-content:center;}
+#modal.open{display:flex;}
+.mbox{background:#fff;border:2px solid var(--bd);border-radius:15px;padding:24px;max-width:430px;width:95%;max-height:90vh;overflow-y:auto;position:relative;animation:mIn .25s ease;box-shadow:0 20px 55px rgba(0,0,0,.12);}
+@keyframes mIn{from{opacity:0;transform:scale(.93);}to{opacity:1;transform:scale(1);}}
+.mclose{position:absolute;top:11px;right:12px;background:var(--bg);border:none;color:var(--mu);font-size:.9rem;cursor:pointer;width:27px;height:27px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.mtabs{display:flex;margin-bottom:16px;background:var(--bg);border-radius:8px;padding:3px;}
+.mtab{flex:1;background:none;border:none;color:var(--mu);padding:7px;border-radius:6px;cursor:pointer;font-size:.81rem;font-family:'Noto Sans',sans-serif;font-weight:700;transition:all .2s;}
+.mtab.active{background:var(--grad);color:#fff;}
+
+/* TOAST */
+#toast{position:fixed;bottom:16px;right:14px;z-index:3000;display:flex;flex-direction:column;gap:5px;}
+.ti{background:#fff;border:1.5px solid var(--bd);border-radius:10px;padding:9px 13px;min-width:200px;display:flex;align-items:center;gap:8px;animation:tIn .3s ease;box-shadow:0 6px 18px rgba(0,0,0,.09);font-size:.79rem;}
+.ti.success{border-left:4px solid var(--gn);}.ti.error{border-left:4px solid var(--rd);}.ti.info{border-left:4px solid var(--bl);}
+@keyframes tIn{from{opacity:0;transform:translateX(100%);}to{opacity:1;transform:translateX(0);}}
+
+/* WHATSAPP ALERT */
+.wa-alert-btn{background:linear-gradient(135deg,#25D366,#128C7E);border:none;color:#fff;padding:8px 16px;border-radius:9px;cursor:pointer;font-size:.78rem;font-weight:800;display:inline-flex;align-items:center;gap:6px;transition:all .2s;box-shadow:0 4px 14px rgba(37,211,102,.3);}
+.wa-alert-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(37,211,102,.45);}
+.wa-step{font-size:.7rem;font-weight:700;color:var(--mu);padding:4px 8px;border-radius:6px;transition:all .2s;white-space:nowrap;}
+.wa-step.active{background:rgba(37,211,102,.12);color:#128C7E;}
+.wa-type-card{background:#F8FAFF;border:2px solid var(--bd);border-radius:13px;padding:16px;cursor:pointer;transition:all .22s;text-align:center;}
+.wa-type-card:hover{border-color:#25D366;background:rgba(37,211,102,.04);}
+.wa-type-card.selected{border-color:#25D366;background:linear-gradient(135deg,rgba(37,211,102,.07),rgba(18,140,126,.05));box-shadow:0 4px 16px rgba(37,211,102,.15);}
+.wa-chip{background:#F0F4FF;border:1.5px solid var(--bd);color:var(--tx2);padding:4px 11px;border-radius:18px;font-size:.72rem;cursor:pointer;font-weight:600;transition:all .2s;display:inline-block;}
+.wa-chip:hover{border-color:#25D366;color:#128C7E;}
+.wa-chip.on{background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;border-color:#25D366;}
+.wa-chip-all.on{background:var(--grad);border-color:var(--pr);}
+.wa-next-btn{width:100%;background:linear-gradient(135deg,#25D366,#128C7E);border:none;color:#fff;padding:11px;border-radius:10px;cursor:pointer;font-size:.88rem;font-weight:800;transition:all .2s;}
+.wa-next-btn:hover{opacity:.9;transform:translateY(-1px);}
+.wa-next-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+
+  .nav-links,.nav-right{display:none;}.hbg{display:block;}
+  #bottomNav{display:flex;}
+  #app{padding-bottom:58px;}
+  .jgrid{grid-template-columns:1fr;}.sal-inputs{grid-template-columns:1fr 1fr;}
+  .nwrap{grid-template-columns:1fr;}.chbox{grid-template-columns:1fr;}.chsb{display:none;}
+  .rwrap{grid-template-columns:1fr;}.rprev{display:none;}.prof-wrap{grid-template-columns:1fr;}
+  .dgrid{grid-template-columns:1fr;}.plgrid{grid-template-columns:1fr;}.pcards{grid-template-columns:1fr;}
+  .f2c{grid-template-columns:1fr;}.sset-grid{grid-template-columns:1fr;}
+  .map-wrap{padding:12px 12px;}.ggrid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ADMIN LOGIN OVERLAY -->
+<div id="adminLogin">
+  <div class="alobx">
+    <div style="font-family:'Baloo 2',sans-serif;font-size:1.9rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:3px;">⚡ KaamKro</div>
+    <div style="font-family:'Baloo 2',sans-serif;font-size:1.1rem;font-weight:800;margin-bottom:5px;">🔐 Admin Panel</div>
+    <p style="color:var(--mu);font-size:.8rem;margin-bottom:20px;">Sirf authorized admins ke liye</p>
+    <div class="fg"><label>Username</label><input class="inp" type="text" id="auser" placeholder="admin" onkeydown="if(event.key==='Enter')adminLogin()"/></div>
+    <div class="fg" style="margin-top:8px;"><label>Password</label><input class="inp" type="password" id="apass" placeholder="Password" onkeydown="if(event.key==='Enter')adminLogin()"/></div>
+    <button class="pbtn" style="margin-top:10px;" onclick="adminLogin()">🔐 Admin Login</button>
+    <button onclick="document.getElementById('adminLogin').classList.remove('open');showSec('home');" style="background:none;border:none;color:var(--mu);cursor:pointer;font-size:.78rem;margin-top:10px;display:block;width:100%;">← Wapas Jao</button>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<nav id="topbar">
+  <div class="logo" onclick="showSec('home')">⚡ KaamKro</div>
+  <div class="nav-links">
+    <button class="nb active" onclick="showSec('home',this)">🏠 Home</button>
+    <button class="nb" onclick="showSec('jobs',this)">💼 Jobs</button>
+    <button class="nb" onclick="showSec('govt',this)">🏛️ Sarkari</button>
+    <button class="nb" onclick="showSec('map',this)">🗺️ Map Jobs</button>
+    <button class="nb" onclick="showSec('chat',this)">💬 Chat <span class="unread-dot">3</span></button>
+    <button class="nb" onclick="showSec('resume',this)">🤖 AI Resume</button>
+    <button class="nb" onclick="showSec('profile',this)">👤 Profile</button>
+    <button class="nb" onclick="showSec('dash',this)">📊 Dash</button>
+    <button class="nb" onclick="showSec('post',this)">➕ Post</button>
+    <button class="nb" onclick="showSec('premium',this)">👑 Premium</button>
+    <button class="nb" onclick="showSec('ads',this)">📢 Ads</button>
+    <button class="nb" onclick="openAdminPanel()" style="color:var(--pu);background:rgba(124,58,237,.08);">🔐 Admin</button>
+  </div>
+  <div class="nav-right">
+    <button class="lang-btn" onclick="toggleLang()">🌐 हिं/EN</button>
+    <button class="notif-btn" onclick="toggleNotif()">🔔<span class="notif-badge" id="notifBadge">3</span></button>
+    <button class="btn-l" onclick="openModal('login')">Login</button>
+    <button class="btn-r" onclick="openModal('register')">Register</button>
+  </div>
+  <button class="hbg" onclick="toggleNav()">☰</button>
+</nav>
+
+<!-- MOBILE NAV -->
+<div id="mNav">
+  <button class="nb" onclick="go('home')">🏠 Home</button>
+  <button class="nb" onclick="go('jobs')">💼 Jobs</button>
+  <button class="nb" onclick="go('govt')">🏛️ Sarkari Naukri</button>
+  <button class="nb" onclick="go('map')">🗺️ Map Jobs</button>
+  <button class="nb" onclick="go('chat')">💬 Chat</button>
+  <button class="nb" onclick="go('resume')">🤖 AI Resume</button>
+  <button class="nb" onclick="go('profile')">👤 Mera Profile</button>
+  <button class="nb" onclick="go('dash')">📊 Dashboard</button>
+  <button class="nb" onclick="go('post')">➕ Post Job</button>
+  <button class="nb" onclick="go('premium')">👑 Premium</button>
+  <button class="nb" onclick="openAdminPanel();toggleNav()" style="color:var(--pu);">🔐 Admin Panel</button>
+  <button class="nb" onclick="openModal('login');toggleNav()">🔑 Login</button>
+</div>
+
+<!-- BOTTOM NAV (mobile) -->
+<div id="bottomNav">
+  <button class="bnnb active" onclick="go('home')"><span>🏠</span>Home</button>
+  <button class="bnnb" onclick="go('jobs')"><span>💼</span>Jobs</button>
+  <button class="bnnb" onclick="go('map')"><span>🗺️</span>Map</button>
+  <button class="bnnb" onclick="go('chat')"><span>💬</span>Chat<span class="unread-dot">3</span></button>
+  <button class="bnnb" onclick="go('profile')"><span>👤</span>Profile</button>
+</div>
+
+<!-- NOTIFICATIONS -->
+<div id="notifPanel">
+  <div class="notif-head">🔔 Notifications <button onclick="clearNotifs()" style="background:none;border:none;color:var(--pr);cursor:pointer;font-size:.74rem;font-weight:700;">Clear all</button></div>
+  <div id="notifList"></div>
+</div>
+
+<div id="app">
+
+<!-- ══ HOME ══ -->
+<div id="homeSection" class="sec active">
+  <section id="hero">
+    <div class="visitor-live"><span class="visitor-dot"></span> <span id="liveVisitors">0</span> log abhi online hain</div>
+    <div class="live-badge"><span class="live-dot"></span> <span id="liveJobCount">10,247</span> Live Jobs</div>
+    <h1>Apna Sapna,<br><span class="hl">Apna Kaam</span> 💪</h1>
+
+    <!-- SARKARI JOBS BIG BUTTON -->
+    <div class="hero-action-row">
+      <button class="sarkari-hero-btn" onclick="showSec('govt')">
+        <span class="shb-icon">🏛️</span>
+        <div class="shb-text">
+          <div class="shb-main">Sarkari Naukri Dekho</div>
+          <div class="shb-sub">3,500+ Vacancies • SSC · Railway · Bank · Police · Army</div>
+        </div>
+        <span class="shb-arrow">→</span>
+      </button>
+      <button class="jobs-hero-btn" onclick="showSec('jobs')">
+        <span class="shb-icon">💼</span>
+        <div class="shb-text">
+          <div class="shb-main">Private Jobs Dekho</div>
+          <div class="shb-sub">10,000+ Live Jobs • IT · Delivery · Teaching · More</div>
+        </div>
+        <span class="shb-arrow">→</span>
+      </button>
+    </div>
+
+    <div class="sbox">
+      <div class="smain">
+        <input type="text" id="hs" placeholder="Job title, skill ya company dhundho..." onkeydown="if(event.key==='Enter')doSearch()"/>
+        <button class="sgo" onclick="doSearch()">🔍 Kaam Dhundo</button>
+      </div>
+      <div class="srow">
+        <select class="ssel" id="hctry" onchange="updCities()">
+          <option value="india">🇮🇳 India</option><option value="uae">🇦🇪 UAE / Dubai</option>
+          <option value="usa">🇺🇸 USA</option><option value="uk">🇬🇧 UK</option>
+          <option value="canada">🇨🇦 Canada</option><option value="australia">🇦🇺 Australia</option>
+          <option value="singapore">🇸🇬 Singapore</option><option value="germany">🇩🇪 Germany</option>
+          <option value="remote">🌐 Remote</option>
+        </select>
+        <select class="ssel" id="hcity">
+          <option>📍 Sab Cities</option><option>Delhi</option><option>Mumbai</option>
+          <option>Bangalore</option><option>Hyderabad</option><option>Pune</option>
+          <option>Chennai</option><option>Kolkata</option><option>Ahmedabad</option>
+          <option>Jaipur</option><option>Lucknow</option>
+        </select>
+      </div>
+      <div class="stags">
+        <span class="stag" onclick="go('jobs')">💻 Developer</span>
+        <span class="stag" onclick="qs('Delivery')">🛵 Delivery</span>
+        <span class="stag" onclick="qs('Teacher')">📚 Teacher</span>
+        <span class="stag" onclick="qs('Helper')">🔧 Helper</span>
+        <span class="stag" onclick="go('govt')">🏛️ Sarkari</span>
+        <span class="stag" onclick="go('map')">🗺️ Map pe Dekho</span>
+        <span class="stag" onclick="qs('Remote')">🌍 Remote</span>
+      </div>
+    </div>
+    <div class="stats-r">
+      <div class="stat"><div class="snum" id="sU">0</div><div class="slbl">Active Users</div></div>
+      <div class="stat"><div class="snum" id="sCities">0</div><div class="slbl">Cities</div></div>
+      <div class="stat"><div class="snum" id="sJ">0</div><div class="slbl">Live Jobs</div></div>
+      <div class="stat"><div class="snum">4.9⭐</div><div class="slbl">Rating</div></div>
+      <div class="stat"><div class="snum">₹0</div><div class="slbl">Listing Cost</div></div>
+    </div>
+  </section>
+
+  <div class="wrap" style="margin-top:32px;">
+    <div class="stitle">🚀 Job Categories</div>
+    <div class="cats" id="catGrid"></div>
+    <div style="text-align:right;margin-top:10px;"><button onclick="showSec('jobs')" style="background:none;border:none;color:var(--pr);cursor:pointer;font-size:.8rem;font-weight:700;">Sab dekho →</button></div>
+  </div>
+
+  <!-- SALARY PREDICTOR -->
+  <div class="wrap">
+    <div class="sal-pred">
+      <h3>💡 Salary Predictor</h3>
+      <p>Apni skills dalo — AI batayega kitna milna chahiye</p>
+      <div class="sal-inputs">
+        <div class="fg" style="margin:0;"><label>Skills / Role</label><input class="inp" type="text" id="sp_skill" placeholder="React, Driver, Teacher..."/></div>
+        <div class="fg" style="margin:0;"><label>Experience (Years)</label><input class="inp" type="number" id="sp_exp" placeholder="2" min="0" max="40"/></div>
+        <div class="fg" style="margin:0;"><label>City</label><select class="inp" id="sp_city"><option>Delhi</option><option>Mumbai</option><option>Bangalore</option><option>Hyderabad</option><option>Pune</option><option>Chennai</option><option>Kolkata</option><option>Small Town</option></select></div>
+        <div class="fg" style="margin:0;"><label>Education</label><select class="inp" id="sp_edu"><option>10th Pass</option><option>12th Pass</option><option>Diploma</option><option>Graduate</option><option>Post Graduate</option></select></div>
+      </div>
+      <button class="aibtn" style="max-width:220px;" onclick="predictSalary()">🤖 Salary Predict Karo</button>
+      <div class="sal-result" id="salResult" style="margin-top:12px;display:none;">
+        <div style="font-size:.75rem;color:var(--mu);margin-bottom:3px;">Estimated Monthly Salary</div>
+        <div class="sal-amount" id="salAmount">₹0</div>
+        <div class="sal-range" id="salRange">Range: ₹0 – ₹0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURED JOBS -->
+  <div class="wrap">
+    <div class="stitle-row">
+      <div class="stitle">🔥 Featured Jobs</div>
+      <div class="live-ind"><span class="live-dot"></span> Real-time data from API</div>
+    </div>
+    <div class="jgrid" id="featuredGrid"></div>
+    <div style="text-align:center;margin-top:12px;">
+      <button onclick="showSec('jobs')" style="background:var(--rd);border:none;color:#fff;padding:8px 20px;border-radius:8px;cursor:pointer;font-size:.8rem;font-weight:700;">🔴 Saari Live Jobs Dekho</button>
+    </div>
+  </div>
+
+  <!-- PROMO BANNERS -->
+  <div class="wrap">
+    <div class="promo" style="background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border-color:rgba(0,135,90,.18);">
+      <div><div class="plbl" style="color:var(--gn);">🏛️ SARKARI NAUKRI</div><h2>3,500+ Govt Vacancies Live!</h2><p>SSC · Railway · Bank · Police · Army · UPSC · State PSC</p><div style="margin-top:7px;background:rgba(229,62,62,.07);border-radius:6px;padding:4px 10px;display:inline-flex;align-items:center;gap:4px;font-size:.72rem;color:var(--rd);font-weight:700;">🔔 SSC CGL 2025 — Last date 31 May 2025</div></div>
+      <button class="prbtn" style="background:var(--grad2);" onclick="showSec('govt')">🏛️ Sarkari Naukri →</button>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="promo" style="background:linear-gradient(135deg,#EFF6FF,#DBEAFE);border-color:rgba(49,130,206,.18);">
+      <div><div class="plbl" style="color:var(--bl);">🗺️ MAP PE JOBS DEKHO</div><h2>India ke Har Shehar ke Jobs!</h2><p>OpenStreetMap pe pin dekho — location se job dhundho</p></div>
+      <button class="prbtn" style="background:var(--grad3);" onclick="showSec('map')">🗺️ Map pe Dekho →</button>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="promo" style="background:linear-gradient(135deg,#FEF3C7,#FFFBEB);border-color:rgba(217,119,6,.2);">
+      <div><div class="plbl" style="color:#92400E;">🤖 AI RESUME BUILDER</div><h2>Professional Resume + Score!</h2><p>Details bharo — AI free mein resume banayega with score</p></div>
+      <button class="prbtn" style="background:linear-gradient(135deg,#D97706,#F59E0B);" onclick="showSec('resume')">🤖 AI Resume Banao →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ JOBS ══ -->
+<div id="jobsSection" class="sec">
+  <div style="max-width:1100px;margin:0 auto;padding:20px 20px;">
+    <div class="stitle-row">
+      <div class="stitle">💼 Jobs & Freelance</div>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <button class="wa-alert-btn" onclick="openWhatsAppAlert('private')" style="font-size:.72rem;padding:6px 12px;">📲 Job Alert</button>
+        <div class="live-ind"><span class="live-dot"></span> LIVE API</div>
+        <button onclick="loadLiveJobs()" style="background:var(--bg);border:2px solid var(--bd);color:var(--tx2);padding:4px 10px;border-radius:7px;cursor:pointer;font-size:.72rem;font-weight:700;">🔄 Refresh</button>
+        <div class="bcnt" id="jcnt">Loading...</div>
+      </div>
+    </div>
+    <div class="src-tabs">
+      <button class="srctab active" id="liveTab" onclick="switchSrc('live',this)"><span class="live-dot"></span>🔴 Live Jobs (API)</button>
+      <button class="srctab local" id="localTab" onclick="switchSrc('local',this)">📋 Local Database</button>
+    </div>
+    <div class="fbar">
+      <input class="fi" type="text" id="jsrch" placeholder="🔍 Job title, skill ya company..." oninput="filterJobs()"/>
+      <select class="fs" id="jctry" onchange="filterJobs()">
+        <option value="">🌍 Country</option><option>🇮🇳 India</option><option>🇦🇪 UAE / Dubai</option>
+        <option>🇺🇸 USA</option><option>🇬🇧 UK</option><option>🇨🇦 Canada</option>
+        <option>🇦🇺 Australia</option><option>🇸🇬 Singapore</option><option>🇩🇪 Germany</option><option>🌐 Remote</option>
+      </select>
+      <select class="fs" id="jstate" onchange="filterJobs()"><option value="">📍 State</option><option>Delhi</option><option>Maharashtra</option><option>Karnataka</option><option>Telangana</option><option>Tamil Nadu</option><option>Gujarat</option><option>UP</option><option>Rajasthan</option></select>
+      <select class="fs" id="jcity_f" onchange="filterJobs()"><option value="">🏙️ City</option><option>Delhi</option><option>Mumbai</option><option>Bangalore</option><option>Hyderabad</option><option>Pune</option><option>Chennai</option><option>Kolkata</option><option>Ahmedabad</option><option>Jaipur</option><option>Remote</option></select>
+      <select class="fs" id="jtype" onchange="filterJobs()"><option value="">Sab Types</option><option>Full-time</option><option>Part-time</option><option>Freelance</option><option>Daily Wage</option><option>Work From Home</option></select>
+      <select class="fs" id="jsal_f" onchange="filterJobs()"><option value="">Salary Range</option><option value="0-30">₹0–30K</option><option value="30-70">₹30–70K</option><option value="70+">₹70K+</option></select>
+      <button class="fclr" onclick="clearJF()">✕ Clear</button>
+    </div>
+    <div class="cattabs" id="jobCatTabs">
+      <button class="cattab active" onclick="filterByCat('',this)">🌐 Sab</button>
+      <button class="cattab" onclick="filterByCat('Design',this)">🎨 Design</button>
+      <button class="cattab" onclick="filterByCat('Development',this)">💻 Dev</button>
+      <button class="cattab" onclick="filterByCat('Content',this)">✍️ Content</button>
+      <button class="cattab" onclick="filterByCat('Marketing',this)">📣 Marketing</button>
+      <button class="cattab" onclick="filterByCat('Teaching',this)">📚 Teaching</button>
+      <button class="cattab" onclick="filterByCat('Delivery',this)">🛵 Delivery</button>
+      <button class="cattab" onclick="filterByCat('Driver',this)">🚗 Driver</button>
+      <button class="cattab" onclick="filterByCat('Helper',this)">🔧 Helper</button>
+      <button class="cattab" onclick="filterByCat('Health',this)">🏥 Health</button>
+      <button class="cattab" onclick="filterByCat('Food',this)">🍕 Food</button>
+      <button class="cattab" onclick="filterByCat('Finance',this)">💰 Finance</button>
+      <button class="cattab" onclick="filterByCat('Remote',this)">🌍 Remote</button>
+    </div>
+    <div class="jgrid" id="jgrid"><div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--mu);"><div class="ldots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><div style="margin-top:10px;font-weight:600;">Live jobs load ho rahi hain...</div></div></div>
+    <button class="lmore" id="loadMoreLive" onclick="loadMoreLiveJobs()">🔴 Aur Live Jobs ↓</button>
+    <button class="lmore" id="loadMoreLocal" onclick="toast('Aur jobs load ho rahi hain...','info')" style="display:none;">Aur Jobs Dekho ↓</button>
+  </div>
+</div>
+
+<!-- ══ GOVT ══ -->
+<div id="govtSection" class="sec">
+  <div class="govt-wrap">
+    <div class="stitle-row">
+      <div class="stitle">🏛️ Sarkari Naukri</div>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <button onclick="refreshGovt()" style="background:var(--bg);border:2px solid var(--bd);color:var(--tx2);padding:4px 10px;border-radius:7px;cursor:pointer;font-size:.72rem;font-weight:700;">🔄 Refresh</button>
+        <div class="auto-timer">⏱️ AUTO-UPDATE: <span id="govtTimer">60:00</span></div>
+      </div>
+    </div>
+    <div class="galert">
+      <div>
+        <div style="font-size:.82rem;font-weight:600;">🔔 <b>Hot Alert:</b> SSC CGL 2025 — Last date: <span style="color:var(--rd);">31 May 2025</span></div>
+        <div style="font-size:.74rem;color:var(--mu);margin-top:3px;">📲 WhatsApp pe free job alerts pao — bilkul free!</div>
+      </div>
+      <button class="wa-alert-btn" onclick="openWhatsAppAlert('govt')">
+        📲 WhatsApp Alert Set Karo
+      </button>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+      <div style="font-size:.75rem;color:var(--mu);">Last: <span id="govtLastUpdate">Abhi</span> • <span id="govtVacancies">0</span> vacancies</div>
+    </div>
+    <!-- STATE TABS -->
+    <div style="font-size:.72rem;color:var(--mu);font-weight:700;margin-bottom:6px;">📍 STATE FILTER:</div>
+    <div class="state-tabs" id="stateTabs">
+      <button class="stab active" onclick="filterGovtState('all',this)">📍 Sab States</button>
+      <button class="stab" onclick="filterGovtState('Central',this)">Central Govt</button>
+      <button class="stab" onclick="filterGovtState('Delhi',this)">Delhi</button>
+      <button class="stab" onclick="filterGovtState('Maharashtra',this)">Maharashtra</button>
+      <button class="stab" onclick="filterGovtState('Gujarat',this)">Gujarat</button>
+      <button class="stab" onclick="filterGovtState('UP',this)">Uttar Pradesh</button>
+      <button class="stab" onclick="filterGovtState('Rajasthan',this)">Rajasthan</button>
+      <button class="stab" onclick="filterGovtState('Karnataka',this)">Karnataka</button>
+    </div>
+    <div class="gtabs">
+      <button class="gtab active" onclick="fG('all',this)">🌐 Sab</button>
+      <button class="gtab" onclick="fG('Railway',this)">🚂 Railway</button>
+      <button class="gtab" onclick="fG('Bank',this)">🏦 Bank</button>
+      <button class="gtab" onclick="fG('SSC',this)">📋 SSC</button>
+      <button class="gtab" onclick="fG('Police',this)">👮 Police</button>
+      <button class="gtab" onclick="fG('Army',this)">⚔️ Army</button>
+      <button class="gtab" onclick="fG('UPSC',this)">🎓 UPSC</button>
+      <button class="gtab" onclick="fG('Teacher',this)">📚 Teacher</button>
+      <button class="gtab" onclick="fG('Health',this)">🏥 Health</button>
+      <button class="gtab" onclick="fG('State PSC',this)">🗺️ State PSC</button>
+      <button class="gtab" onclick="fG('Defence',this)">🛡️ Defence</button>
+      <button class="gtab" onclick="fG('Post Office',this)">📮 Post Office</button>
+    </div>
+    <div class="ggrid" id="ggrid"></div>
+    <button class="lmore" onclick="toast('Aur govt jobs load ho rahi hain...','info')">Aur Jobs Dekho ↓</button>
+  </div>
+</div>
+
+<!-- ══ MAP JOBS ══ -->
+<div id="mapSection" class="sec">
+  <div class="map-wrap">
+    <div class="stitle">🗺️ Map pe Jobs Dekho</div>
+    <p style="color:var(--mu);font-size:.8rem;margin-bottom:14px;">Real OpenStreetMap — India ke har shehar ke jobs</p>
+    <div class="map-stat-row">
+      <div class="mstat"><div><div class="mstat-num" id="mapJobCount">0</div><div class="mstat-lbl">Jobs on Map</div></div><span style="font-size:1.5rem;">📍</span></div>
+      <div class="mstat"><div><div class="mstat-num">20+</div><div class="mstat-lbl">Cities Covered</div></div><span style="font-size:1.5rem;">🏙️</span></div>
+      <div class="mstat"><div><div class="mstat-num" id="mapView">India</div><div class="mstat-lbl">Current View</div></div><span style="font-size:1.5rem;">🌏</span></div>
+      <div class="mstat"><div><div class="mstat-num">All</div><div class="mstat-lbl">Radius</div></div><span style="font-size:1.5rem;">📡</span></div>
+    </div>
+    <div class="map-controls">
+      <input class="fi" type="text" id="mapSearch" placeholder="🔍 City ya job dhundho..." style="max-width:200px;" oninput="filterMapJobs()"/>
+      <select class="fs" id="mapCity" onchange="jumpToCity()">
+        <option value="india">🌍 Sab India</option>
+        <option value="delhi">🏛️ Delhi</option><option value="mumbai">🌆 Mumbai</option>
+        <option value="bangalore">🌿 Bangalore</option><option value="hyderabad">💎 Hyderabad</option>
+        <option value="pune">🎓 Pune</option><option value="chennai">🌊 Chennai</option>
+        <option value="kolkata">🎭 Kolkata</option><option value="jaipur">🏰 Jaipur</option>
+        <option value="ahmedabad">🏛️ Ahmedabad</option><option value="surat">💎 Surat</option>
+        <option value="lucknow">🏛️ Lucknow</option><option value="noida">🏙️ Noida</option>
+        <option value="chandigarh">🌲 Chandigarh</option>
+      </select>
+      <select class="fs" id="mapCat" onchange="filterMapJobs()">
+        <option value="">🌐 Sab</option><option value="Dev">💻 Dev</option>
+        <option value="Delivery">🛵 Delivery</option><option value="Teaching">📚 Teaching</option>
+        <option value="Helper">🔧 Helper</option><option value="Health">🏥 Health</option>
+        <option value="Food">🍕 Food</option>
+      </select>
+      <button onclick="locateUser()" style="background:var(--grad);border:none;color:#fff;padding:7px 14px;border-radius:8px;cursor:pointer;font-size:.76rem;font-weight:700;">📍 Meri Location</button>
+    </div>
+    <div id="leafletMap"></div>
+    <div class="map-jobs-list" id="mapJobsList"></div>
+  </div>
+</div>
+
+<!-- ══ CHAT ══ -->
+<div id="chatSection" class="sec">
+  <div class="ch-wrap">
+    <div class="stitle">💬 Messages</div>
+    <div class="chbox">
+      <div class="chsb">
+        <div class="chsbh">Conversations <span class="unread-dot" style="margin-left:4px;">3</span></div>
+        <div id="chlist"></div>
+      </div>
+      <div class="chmain">
+        <div class="chhdr">
+          <div style="font-size:1rem;">🧑‍💼</div>
+          <div><div style="font-size:.84rem;font-weight:700;" id="chname">Zomato Recruiter</div><div style="font-size:.66rem;color:var(--gn);font-weight:700;">● Online</div></div>
+        </div>
+        <div class="chmsgs" id="chmsgs"></div>
+        <div class="chinp">
+          <input type="text" id="chinp" placeholder="😊 Message likho..." onkeydown="if(event.key==='Enter')sendMsg()"/>
+          <button class="sbtn" onclick="sendMsg()">✈️</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ AI RESUME ══ -->
+<div id="resumeSection" class="sec">
+  <div style="padding:20px 20px 6px;max-width:1100px;margin:0 auto;">
+    <div class="stitle">🤖 AI Resume Builder</div>
+    <p style="color:var(--mu);font-size:.82rem;margin-bottom:14px;">Details bharo — professional resume + score instant!</p>
+  </div>
+  <div class="rwrap">
+    <div class="rform">
+      <div class="flbl">👤 Personal Info</div>
+      <div class="fg"><label>Poora Naam *</label><input type="text" id="r_n" placeholder="Rahul Kumar"/></div>
+      <div class="fg"><label>Job Title *</label><input type="text" id="r_t" placeholder="Full Stack Developer"/></div>
+      <div class="fg"><label>Phone</label><input type="tel" id="r_p" placeholder="+91 98765 43210"/></div>
+      <div class="fg"><label>Email</label><input type="email" id="r_e" placeholder="rahul@email.com"/></div>
+      <div class="fg"><label>City</label><input type="text" id="r_c" placeholder="Delhi NCR"/></div>
+      <div class="fg"><label>LinkedIn / Portfolio</label><input type="text" id="r_li" placeholder="linkedin.com/in/rahul"/></div>
+      <div class="flbl">💼 Experience & Skills</div>
+      <div class="fg"><label>Experience</label><textarea id="r_ex" placeholder="2 years at Zomato as Delivery Executive..."></textarea></div>
+      <div class="fg"><label>Skills (comma se)</label><input type="text" id="r_sk" placeholder="React, Node.js, MongoDB"/></div>
+      <div class="fg"><label>Education</label><input type="text" id="r_ed" placeholder="B.Tech, Delhi University 2022"/></div>
+      <div class="fg"><label>Languages</label><input type="text" id="r_l" placeholder="Hindi, English"/></div>
+      <div class="fg"><label>Achievements</label><textarea id="r_ach" placeholder="Best Employee Award 2023..."></textarea></div>
+      <div class="fg"><label>Summary</label><textarea id="r_su" placeholder="Apne baare mein bolo..."></textarea></div>
+      <button class="aibtn" id="rbtn" onclick="buildResume()">🤖 Resume Banao</button>
+      <button class="aibtn" style="background:var(--grad2);margin-top:6px;" onclick="dlResume()">📥 Download</button>
+    </div>
+    <div class="rprev">
+      <div class="rtool"><span style="font-weight:700;">📄 Resume Preview</span><button class="dlbtn" onclick="dlResume()">📥 Download</button></div>
+      <div style="padding:14px;">
+        <div class="res-score" id="scoreBox" style="display:none;">
+          <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:.8rem;font-weight:700;color:var(--gn);">📊 Resume Score</span><span id="scoreNum" style="font-family:'Baloo 2',sans-serif;font-size:1.4rem;font-weight:800;color:var(--gn);">0%</span></div>
+          <div class="score-bar-bg"><div class="score-bar-fill" id="scoreBar" style="width:0%;"></div></div>
+        </div>
+      </div>
+      <div id="resumeOut"><div style="display:flex;align-items:center;justify-content:center;height:240px;flex-direction:column;gap:8px;color:var(--mu);"><div style="font-size:2.6rem;">📄</div><div style="font-weight:700;">Details bharo aur button dabao</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PROFILE ══ -->
+<div id="profileSection" class="sec">
+  <div class="prof-wrap">
+    <div>
+      <div class="prof-card">
+        <div class="prof-av">👨‍💻</div>
+        <button style="background:var(--bg);border:1.5px solid var(--bd);color:var(--mu);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:.7rem;font-weight:700;margin-bottom:8px;">✏️ Edit Profile</button>
+        <div class="prof-badge">⭐ Gold Member</div>
+        <div class="prof-name">Rahul Kumar</div>
+        <div class="prof-title">Full Stack Developer</div>
+        <div style="font-size:.74rem;color:var(--mu);margin-bottom:12px;">📍 Delhi, India</div>
+        <div class="prof-stats">
+          <div class="pstat"><div class="pstat-num">23</div><div class="pstat-lbl">Applied</div></div>
+          <div class="pstat"><div class="pstat-num">4</div><div class="pstat-lbl">Interviews</div></div>
+          <div class="pstat"><div class="pstat-num">1</div><div class="pstat-lbl">Hired</div></div>
+        </div>
+        <div class="skill-tags" id="profileSkills"></div>
+        <button class="aibtn" style="font-size:.78rem;padding:8px;" onclick="showSec('resume')">🤖 Resume Update Karo</button>
+        <button class="aibtn" style="background:var(--grad3);font-size:.78rem;padding:8px;margin-top:5px;" onclick="showSec('premium')">👑 Upgrade Plan</button>
+      </div>
+    </div>
+    <div>
+      <div class="saved-wrap">
+        <div class="stitle">📋 Application History</div>
+        <div class="apphist" id="appHist"></div>
+      </div>
+      <div class="saved-wrap" style="margin-top:14px;">
+        <div class="stitle">🔖 Saved Jobs <span id="savedCount" class="bcnt">0 saved</span></div>
+        <div id="savedJobsList"><div style="text-align:center;padding:20px;color:var(--mu);font-size:.82rem;">Koi saved job nahi. Jobs mein 🔖 click karo!</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DASHBOARD ══ -->
+<div id="dashSection" class="sec">
+  <div class="dwrap">
+    <div class="stitle">📊 Company Dashboard</div>
+    <div class="kgrid">
+      <div class="kpi o"><div class="knum">5</div><div class="klbl">Posted Jobs</div><div class="kdlt">↑ 2 this week</div></div>
+      <div class="kpi g"><div class="knum">143</div><div class="klbl">Applications</div><div class="kdlt">↑ 28 today</div></div>
+      <div class="kpi b"><div class="knum">2.4K</div><div class="klbl">Profile Views</div><div class="kdlt">↑ 18%</div></div>
+      <div class="kpi gd"><div class="knum">12</div><div class="klbl">Hired</div><div class="kdlt">↑ 3 this month</div></div>
+    </div>
+    <div class="dgrid">
+      <div class="dc">
+        <h3>📈 Applications (Last 7 Days)</h3>
+        <div class="mini-chart" id="miniChart"></div>
+        <h3>🎯 Applicant Funnel</h3>
+        <div class="funnel" id="funnelChart"></div>
+        <h3 style="margin-top:14px;">📋 Posted Jobs <button onclick="showSec('post')" style="background:var(--grad);border:none;color:#fff;padding:3px 10px;border-radius:6px;cursor:pointer;font-size:.7rem;font-weight:700;margin-left:8px;">➕ New Job</button></h3>
+        <div id="postedJobsList"></div>
+      </div>
+      <div class="dc">
+        <h3>👥 Recent Applicants</h3>
+        <div id="alist"></div>
+        <h3 style="margin-top:14px;">📊 By Category</h3>
+        <div id="bchart"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ POST JOB ══ -->
+<div id="postSection" class="sec">
+  <div class="pwrap">
+    <div class="stitle">➕ Job Post Karo</div>
+    <div class="pcard">
+      <div class="itip">💡 <b>Free listing!</b> Post karo aur map pe bhi dikho!</div>
+      <div class="flbl" style="margin-top:0;">🏢 Company Info</div>
+      <div class="f2c">
+        <div class="fg"><label>Company *</label><input class="inp" type="text" id="p_co" placeholder="Zomato India"/></div>
+        <div class="fg"><label>Industry</label><select class="inp" id="p_ind"><option>Technology/IT</option><option>Education</option><option>Healthcare</option><option>Food/Delivery</option><option>Finance</option><option>Retail</option></select></div>
+        <div class="fg"><label>Email *</label><input class="inp" type="email" id="p_em" placeholder="hr@company.com"/></div>
+        <div class="fg"><label>Phone</label><input class="inp" type="tel" id="p_ph" placeholder="+91 ..."/></div>
+      </div>
+      <div class="flbl">💼 Job Details</div>
+      <div class="f2c">
+        <div class="fg"><label>Job Title *</label><input class="inp" type="text" id="p_ti" placeholder="Delivery Executive"/></div>
+        <div class="fg"><label>Category *</label><select class="inp" id="p_cat"><option>💻 Development</option><option>🎨 Design</option><option>📚 Teaching</option><option>🛵 Delivery</option><option>🔧 Helper</option><option>🏥 Health</option><option>🍕 Food</option></select></div>
+        <div class="fg"><label>Job Type</label><select class="inp" id="p_type"><option>Full-time</option><option>Part-time</option><option>Freelance</option><option>Daily Wage</option><option>Work From Home</option></select></div>
+        <div class="fg"><label>City *</label><select class="inp" id="p_city"><option>Delhi</option><option>Mumbai</option><option>Bangalore</option><option>Hyderabad</option><option>Pune</option><option>Chennai</option><option>Kolkata</option><option>Ahmedabad</option><option>Jaipur</option><option>Lucknow</option></select></div>
+        <div class="fg"><label>Salary</label><input class="inp" type="text" id="p_sal" placeholder="₹15,000–₹25,000/month"/></div>
+        <div class="fg"><label>Openings</label><input class="inp" type="number" id="p_open" placeholder="5" min="1"/></div>
+        <div class="fg"><label>Skills</label><input class="inp" type="text" id="p_sk" placeholder="Bike, Smartphone, Hindi"/></div>
+      </div>
+      <div class="fg"><label>Description *</label><textarea class="inp" id="p_desc" style="min-height:85px;" placeholder="Job ki details, responsibilities, requirements..."></textarea></div>
+      <div class="flbl">⚡ Listing Type</div>
+      <div class="pcards">
+        <div class="pc sel" onclick="selP(this,'free')"><div class="pcn">🆓 Free</div><div class="pcp">₹0</div><div class="pcd">Map pe bhi dikho</div></div>
+        <div class="pc" onclick="selP(this,'featured')"><div class="pcn">⭐ Featured</div><div class="pcp">₹999</div><div class="pcd">2x applications</div></div>
+        <div class="pc" onclick="selP(this,'sponsored')"><div class="pcn">🚀 Sponsored</div><div class="pcp">₹2,999</div><div class="pcd">3x + map highlight</div></div>
+      </div>
+      <button class="pbtn" onclick="submitJob()">🚀 Job Post Karo — Map pe Dikho!</button>
+      <div class="ptips">
+        <h4>📊 Tips</h4>
+        <ul><li>Clear title likho</li><li>Salary batao</li><li>City select karo — map pe dikho</li><li>Skills clearly likho</li></ul>
+        <div style="margin-top:8px;background:rgba(49,130,206,.06);border-radius:7px;padding:8px 11px;font-size:.74rem;color:var(--bl);font-weight:600;">🗺️ Map Visibility — Job seekers map pe aapki job dekh sakte hain — location se dhundenge!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PREMIUM ══ -->
+<div id="premiumSection" class="sec">
+  <div class="pmwrap">
+    <div class="stitle" style="justify-content:center;display:flex;">👑 Premium Plans</div>
+    <p style="color:var(--mu);">Job search 10x faster karo</p>
+    <div class="plgrid">
+      <div class="plbox"><h3>🆓 Free</h3><div class="plp">₹0<span>/month</span></div><ul class="plf"><li>5 applications/month</li><li>Map pe job dekho</li><li>Basic profile</li><li class="no">Featured badge</li><li class="no">Direct messaging</li><li class="no">AI optimizer</li></ul><button class="ubtn out">Current Plan</button></div>
+      <div class="plbox pop"><div class="pbdg">🔥 Popular</div><h3>⭐ Gold</h3><div class="plp">₹199<span>/month</span></div><ul class="plf"><li>Unlimited applications</li><li>Map highlight</li><li>Featured badge</li><li>Direct messaging</li><li>Analytics</li><li class="no">AI optimizer</li></ul><button class="ubtn" onclick="toast('Gold plan — payment page pe ja raha hai...','info')">Upgrade to Gold</button></div>
+      <div class="plbox"><h3>💎 Pro</h3><div class="plp" style="color:var(--bl);">₹599<span>/month</span></div><ul class="plf"><li>Everything in Gold</li><li>Top of map results</li><li>AI resume optimizer</li><li>Advanced analytics</li><li>Verified Pro badge</li><li>Priority support</li></ul><button class="ubtn" style="background:var(--grad3);" onclick="toast('Pro plan — payment page pe ja raha hai...','info')">Upgrade to Pro</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ADS ══ -->
+<div id="adsSection" class="sec">
+  <div class="awrap">
+    <div class="stitle">📢 Business Promote Karo</div>
+    <p style="color:var(--mu);margin-bottom:18px;font-size:.82rem;">50,000+ active job seekers tak pahuncho</p>
+    <div class="apks">
+      <div class="apk"><div class="aico">📌</div><h3>Sponsored Listing</h3><div class="apr">₹999–₹2,999</div><p>Top pe + Map pe highlight. 3x zyada applications!</p><div class="apk-est">Est. 5,000–15,000 job seekers</div><button class="book-btn" onclick="toast('Sponsored listing inquiry bhej di! 📌','success')">Book Karo</button></div>
+      <div class="apk"><div class="aico">🏠</div><h3>Homepage Banner</h3><div class="apr">₹4,999/week</div><p>1 lakh+ daily visitors. Prime placement!</p><div class="apk-est">Est. 1,00,000+ impressions</div><button class="book-btn" onclick="toast('Homepage banner inquiry bhej di! 🏠','success')">Book Karo</button></div>
+      <div class="apk"><div class="aico">📧</div><h3>Newsletter</h3><div class="apr">₹1,999/send</div><p>30,000+ freelancers ko weekly email.</p><div class="apk-est">30,000+ subscribers</div><button class="book-btn" onclick="toast('Newsletter inquiry bhej di! 📧','success')">Book Karo</button></div>
+      <div class="apk"><div class="aico">🔔</div><h3>Push Notification</h3><div class="apr">₹799/campaign</div><p>Targeted, high CTR. Phone pe direct!</p><div class="apk-est">CTR: 8–12%</div><button class="book-btn" onclick="toast('Push notification inquiry bhej di! 🔔','success')">Book Karo</button></div>
+    </div>
+    <div style="background:#fff;border:2px solid var(--bd);border-radius:13px;padding:22px;max-width:520px;margin:0 auto;box-shadow:var(--sh);">
+      <h3 style="margin-bottom:12px;">📩 Ad Inquire Karo</h3>
+      <div class="fg"><label>Company</label><input class="inp" type="text" placeholder="Your Company"/></div>
+      <div class="fg"><label>Email</label><input class="inp" type="email" placeholder="marketing@company.com"/></div>
+      <div class="fg"><label>Budget</label><select class="inp"><option>₹1,000–₹5,000</option><option>₹5,000–₹15,000</option><option>₹15,000+</option></select></div>
+      <div class="fg"><label>Message</label><textarea class="inp" placeholder="Apna requirement batao..."></textarea></div>
+      <button style="background:var(--grad);border:none;color:#fff;padding:9px 22px;border-radius:8px;cursor:pointer;font-weight:700;font-size:.82rem;" onclick="toast('Inquiry bhej di! 24hrs mein response milega 🎉','success')">📩 Inquiry Bhejo</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ADMIN ══ -->
+<div id="adminSection" class="sec">
+  <div class="admin-wrap">
+    <div class="admin-topbar">
+      <div><div class="admin-title">🔐 KaamKro Admin Panel</div><div style="font-size:.7rem;color:var(--mu);margin-top:1px;">Welcome, <b>Ajaysinh Chavda</b> | admin@kaamkro.com</div></div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <div class="admin-nav">
+          <button class="anav active" onclick="adminTab('overview',this)">📊 Overview</button>
+          <button class="anav" onclick="adminTab('analytics',this)">👁️ Visitors</button>
+          <button class="anav" onclick="adminTab('subscribers',this)">📲 WA Subscribers</button>
+          <button class="anav" onclick="adminTab('jobs',this)">💼 Jobs</button>
+          <button class="anav" onclick="adminTab('govt',this)">🏛️ Govt</button>
+          <button class="anav" onclick="adminTab('users',this)">👥 Users</button>
+          <button class="anav" onclick="adminTab('settings',this)">⚙️ Settings</button>
+        </div>
+        <button onclick="adminLogout()" style="background:#FEE2E2;border:none;color:var(--rd);padding:5px 11px;border-radius:7px;cursor:pointer;font-size:.73rem;font-weight:700;">Logout →</button>
+      </div>
+    </div>
+
+    <!-- OVERVIEW -->
+    <div class="admin-sec active" id="atab-overview">
+      <div class="astat-grid">
+        <div class="astat"><div class="astat-num" id="a-tj">30</div><div class="astat-lbl">Total Jobs</div></div>
+        <div class="astat"><div class="astat-num">12</div><div class="astat-lbl">Govt Vacancies</div></div>
+        <div class="astat"><div class="astat-num">50K+</div><div class="astat-lbl">Total Users</div></div>
+        <div class="astat"><div class="astat-num">143</div><div class="astat-lbl">Applications Today</div></div>
+        <div class="astat"><div class="astat-num" id="a-sub-count" style="color:#25D366;">0</div><div class="astat-lbl">📲 WA Subscribers</div></div>
+        <div class="astat"><div class="astat-num">₹24,500</div><div class="astat-lbl">Revenue (Month)</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:13px;">
+        <div class="dc">
+          <h3>📋 Latest Activity</h3>
+          <div class="aitem"><div class="aav">📝</div><div><div class="an">New Job Posted</div><div class="ar">React Dev — TechMind • 2 min ago</div></div><span class="ast new">New</span></div>
+          <div class="aitem"><div class="aav">👤</div><div><div class="an">New User Registered</div><div class="ar">Priya Sharma — Delhi • 5 min ago</div></div><span class="ast sh">User</span></div>
+          <div class="aitem"><div class="aav">💰</div><div><div class="an">Payment Received</div><div class="ar">Featured Listing ₹999 • 18 min ago</div></div><span class="ast sh">Paid</span></div>
+          <div class="aitem"><div class="aav">📣</div><div><div class="an">Ad Inquiry</div><div class="ar">XYZ Co — ₹5,000 budget • 1hr ago</div></div><span class="ast new">New</span></div>
+          <div class="aitem" id="latestSubRow" style="display:none;"><div class="aav" style="background:rgba(37,211,102,.1);">📲</div><div><div class="an" id="latestSubName">New WA Subscriber</div><div class="ar" id="latestSubInfo">—</div></div><span class="ast sh" style="background:rgba(37,211,102,.1);color:#128C7E;">WA Alert</span></div>
+        </div>
+        <div class="dc">
+          <h3>📊 Jobs by Category</h3>
+          <div class="br"><div class="brl">Delivery</div><div class="brbg"><div class="brf" style="width:82%;"></div></div><div class="brv">24</div></div>
+          <div class="br"><div class="brl">Dev</div><div class="brbg"><div class="brf" style="width:62%;background:var(--grad3);"></div></div><div class="brv">18</div></div>
+          <div class="br"><div class="brl">Driver</div><div class="brbg"><div class="brf" style="width:45%;background:var(--grad2);"></div></div><div class="brv">14</div></div>
+          <div class="br"><div class="brl">Teaching</div><div class="brbg"><div class="brf" style="width:35%;"></div></div><div class="brv">11</div></div>
+          <div class="br"><div class="brl">Helper</div><div class="brbg"><div class="brf" style="width:28%;"></div></div><div class="brv">9</div></div>
+          <div style="margin-top:14px;background:linear-gradient(135deg,rgba(37,211,102,.07),rgba(18,140,126,.04));border:1.5px solid rgba(37,211,102,.2);border-radius:9px;padding:11px 13px;">
+            <div style="font-size:.76rem;font-weight:800;color:#128C7E;margin-bottom:8px;">📲 WhatsApp Subscribers</div>
+            <div id="subTypeBreakdown" style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:8px;"></div>
+            <button onclick="adminTab('subscribers',document.querySelectorAll('.anav')[2])" style="background:linear-gradient(135deg,#25D366,#128C7E);border:none;color:#fff;padding:5px 14px;border-radius:6px;cursor:pointer;font-size:.72rem;font-weight:700;">Manage Subscribers →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN JOBS -->
+    <div class="admin-sec" id="atab-analytics">
+      <div class="astat-grid" id="visitorStats"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
+        <div class="dc">
+          <h3>📈 Daily Visitors (Last 7 Days)</h3>
+          <div class="mini-chart" id="visitorChart" style="height:70px;margin-bottom:14px;"></div>
+          <h3>📱 Device Breakdown</h3>
+          <div id="deviceChart" style="margin-top:8px;"></div>
+        </div>
+        <div class="dc">
+          <h3>🌍 Top Cities</h3>
+          <div id="cityChart" style="margin-top:4px;"></div>
+          <h3 style="margin-top:14px;">🔗 Top Pages</h3>
+          <div id="pageChart" style="margin-top:4px;"></div>
+        </div>
+      </div>
+      <div class="dc">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <h3>📋 Recent Visits Log</h3>
+          <button onclick="clearVisitorLog()" style="background:#FEE2E2;border:none;color:var(--rd);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:.72rem;font-weight:700;">🗑️ Clear Log</button>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="atbl" id="visitorLogTable">
+            <thead><tr><th>#</th><th>Time</th><th>Page</th><th>City</th><th>Device</th><th>Duration</th><th>Source</th></tr></thead>
+            <tbody id="visitorLogBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- WA SUBSCRIBERS -->
+    <div class="admin-sec" id="atab-subscribers">
+      <div class="astat-grid" id="subStats"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px;">
+        <div style="display:flex;gap:6px;">
+          <button onclick="filterSubs('all')" style="background:var(--grad);border:none;color:#fff;padding:5px 13px;border-radius:7px;cursor:pointer;font-size:.76rem;font-weight:700;">All</button>
+          <button onclick="filterSubs('govt')" style="background:var(--grad2);border:none;color:#fff;padding:5px 13px;border-radius:7px;cursor:pointer;font-size:.76rem;font-weight:700;">🏛️ Govt</button>
+          <button onclick="filterSubs('private')" style="background:var(--grad3);border:none;color:#fff;padding:5px 13px;border-radius:7px;cursor:pointer;font-size:.76rem;font-weight:700;">💼 Private</button>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button onclick="exportSubs()" style="background:#F0FDF4;border:2px solid var(--gn);color:var(--gn);padding:5px 13px;border-radius:7px;cursor:pointer;font-size:.76rem;font-weight:700;">📥 Export CSV</button>
+          <button onclick="sendBulkWA()" style="background:linear-gradient(135deg,#25D366,#128C7E);border:none;color:#fff;padding:5px 13px;border-radius:7px;cursor:pointer;font-size:.76rem;font-weight:700;">📲 Bulk Message</button>
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="atbl">
+          <thead><tr><th>#</th><th>Naam</th><th>WhatsApp</th><th>Job Type</th><th>Preferences</th><th>City</th><th>Frequency</th><th>Joined</th><th>Status</th></tr></thead>
+          <tbody id="subTbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ADMIN JOBS (manage) -->
+    <div class="admin-sec" id="atab-jobs">
+      <div id="ajform" style="display:none;">
+        <div class="aform"><h3 id="ajft">➕ Naya Job Add Karo</h3>
+          <div class="aform-grid">
+            <div class="fg"><label>Job Title *</label><input class="inp" type="text" id="aj_title" placeholder="Delivery Executive"/></div>
+            <div class="fg"><label>Company *</label><input class="inp" type="text" id="aj_co" placeholder="Zomato"/></div>
+            <div class="fg"><label>Category</label><select class="inp" id="aj_cat"><option>Delivery</option><option>Development</option><option>Design</option><option>Content</option><option>Marketing</option><option>Teaching</option><option>Driver</option><option>Helper</option><option>Health</option><option>Finance</option><option>Sales</option><option>Food</option></select></div>
+            <div class="fg"><label>Job Type</label><select class="inp" id="aj_type"><option>Full-time</option><option>Part-time</option><option>Freelance</option><option>Daily Wage</option><option>Work From Home</option></select></div>
+            <div class="fg"><label>Location</label><input class="inp" type="text" id="aj_loc" placeholder="Delhi NCR"/></div>
+            <div class="fg"><label>Salary</label><input class="inp" type="text" id="aj_sal" placeholder="₹20K–₹30K/mo"/></div>
+            <div class="fg"><label>Badge</label><select class="inp" id="aj_badge"><option value="">None</option><option value="featured">Featured</option><option value="hot">Hot</option><option value="new">New</option></select></div>
+            <div class="fg"><label>Status</label><select class="inp" id="aj_status"><option value="live">Live</option><option value="pending">Pending</option><option value="closed">Closed</option></select></div>
+          </div>
+          <div class="fg"><label>Skills</label><input class="inp" type="text" id="aj_sk" placeholder="Bike, Smartphone"/></div>
+          <button class="asave" id="ajsavebtn" onclick="saveAdminJob()">💾 Save</button>
+          <button class="acancel" onclick="document.getElementById('ajform').style.display='none'">Cancel</button>
+        </div>
+      </div>
+      <button class="add-btn" onclick="openAJobForm()">➕ Naya Job Add Karo</button>
+      <div style="overflow-x:auto;"><table class="atbl"><thead><tr><th>#</th><th>Title</th><th>Company</th><th>Category</th><th>Location</th><th>Salary</th><th>Badge</th><th>Status</th><th>Actions</th></tr></thead><tbody id="ajTbody"></tbody></table></div>
+    </div>
+
+    <!-- ADMIN GOVT -->
+    <div class="admin-sec" id="atab-govt">
+      <div id="agform" style="display:none;">
+        <div class="aform"><h3>➕ Govt Job Add Karo</h3>
+          <div class="aform-grid">
+            <div class="fg"><label>Organization *</label><input class="inp" type="text" id="ag_org" placeholder="SSC"/></div>
+            <div class="fg"><label>Job Title *</label><input class="inp" type="text" id="ag_title" placeholder="SSC CGL 2025"/></div>
+            <div class="fg"><label>Category</label><select class="inp" id="ag_cat"><option>SSC</option><option>Railway</option><option>Bank</option><option>Police</option><option>Army</option><option>UPSC</option><option>State PSC</option><option>Teacher</option><option>Health</option><option>Defence</option><option>Post Office</option></select></div>
+            <div class="fg"><label>State</label><select class="inp" id="ag_state"><option value="Central">Central Govt</option><option value="Delhi">Delhi</option><option value="Maharashtra">Maharashtra</option><option value="Gujarat">Gujarat</option><option value="UP">Uttar Pradesh</option><option value="Rajasthan">Rajasthan</option></select></div>
+            <div class="fg"><label>Total Posts</label><input class="inp" type="text" id="ag_posts" placeholder="5,000"/></div>
+            <div class="fg"><label>Last Date</label><input class="inp" type="text" id="ag_date" placeholder="31 May 2025"/></div>
+            <div class="fg"><label>Pay Scale</label><input class="inp" type="text" id="ag_pay" placeholder="₹25,500–₹81,100"/></div>
+          </div>
+          <button class="asave" onclick="saveAdminGovt()">💾 Save</button>
+          <button class="acancel" onclick="document.getElementById('agform').style.display='none'">Cancel</button>
+        </div>
+      </div>
+      <button class="add-btn" onclick="document.getElementById('agform').style.display='block'">➕ Govt Job Add Karo</button>
+      <div style="overflow-x:auto;"><table class="atbl"><thead><tr><th>#</th><th>Org</th><th>Title</th><th>Category</th><th>State</th><th>Posts</th><th>Last Date</th><th>Pay</th><th>Del</th></tr></thead><tbody id="agTbody"></tbody></table></div>
+    </div>
+
+    <!-- ADMIN USERS -->
+    <div class="admin-sec" id="atab-users">
+      <div style="overflow-x:auto;"><table class="atbl"><thead><tr><th>#</th><th>Name</th><th>Email</th><th>City</th><th>Role</th><th>Joined</th><th>Status</th><th>Action</th></tr></thead><tbody id="auTbody"></tbody></table></div>
+    </div>
+
+    <!-- ADMIN SETTINGS -->
+    <div class="admin-sec" id="atab-settings">
+      <div class="sset-grid">
+        <div class="scard"><h3>🌐 Site Settings</h3>
+          <div class="fg"><label>Site Name</label><input class="inp" type="text" value="KaamKro"/></div>
+          <div class="fg"><label>Tagline</label><input class="inp" type="text" value="India ka #1 Job Platform"/></div>
+          <div class="fg"><label>Contact Email</label><input class="inp" type="email" value="info@kaamkro.com"/></div>
+          <div class="fg"><label>Admin Password Change</label><input class="inp" type="password" placeholder="New password..."/></div>
+          <button class="asave" onclick="toast('Settings save ho gayi! ✅','success')">💾 Save Settings</button>
+        </div>
+        <div class="scard"><h3>⚙️ Feature Toggles</h3>
+          <div class="tog"><label>Live Job Postings</label><label class="toggle"><input type="checkbox" checked/><span class="tsl"></span></label></div>
+          <div class="tog"><label>Map Jobs</label><label class="toggle"><input type="checkbox" checked/><span class="tsl"></span></label></div>
+          <div class="tog"><label>Govt Jobs Section</label><label class="toggle"><input type="checkbox" checked/><span class="tsl"></span></label></div>
+          <div class="tog"><label>AI Resume Builder</label><label class="toggle"><input type="checkbox" checked/><span class="tsl"></span></label></div>
+          <div class="tog"><label>Salary Predictor</label><label class="toggle"><input type="checkbox" checked/><span class="tsl"></span></label></div>
+          <div class="tog"><label>Chat System</label><label class="toggle"><input type="checkbox" checked/><span class="tsl"></span></label></div>
+          <div class="tog"><label>Premium Plans</label><label class="toggle"><input type="checkbox" checked/><span class="tsl"></span></label></div>
+          <div class="tog"><label>Maintenance Mode</label><label class="toggle"><input type="checkbox"/><span class="tsl"></span></label></div>
+          <button class="asave" style="margin-top:10px;" onclick="toast('Feature settings save! ✅','success')">💾 Save</button>
+        </div>
+        <div class="scard"><h3>💰 Pricing</h3>
+          <div class="fg"><label>Featured Listing (₹)</label><input class="inp" type="number" value="999"/></div>
+          <div class="fg"><label>Sponsored (₹)</label><input class="inp" type="number" value="2999"/></div>
+          <div class="fg"><label>Gold Plan (₹/mo)</label><input class="inp" type="number" value="199"/></div>
+          <div class="fg"><label>Pro Plan (₹/mo)</label><input class="inp" type="number" value="599"/></div>
+          <button class="asave" onclick="toast('Pricing update! ✅','success')">💾 Save</button>
+        </div>
+        <div class="scard"><h3>📣 Stats (Edit)</h3>
+          <div class="fg"><label>Total Users</label><input class="inp" type="text" value="50,000+"/></div>
+          <div class="fg"><label>Live Jobs</label><input class="inp" type="text" value="10,000+"/></div>
+          <div class="fg"><label>Cities</label><input class="inp" type="text" value="50+"/></div>
+          <div class="fg"><label>Rating</label><input class="inp" type="text" value="4.9⭐"/></div>
+          <button class="asave" onclick="toast('Stats update! ✅','success')">💾 Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- #app -->
+
+<!-- ══ WHATSAPP ALERT MODAL ══ -->
+<div id="waModal" style="display:none;position:fixed;inset:0;z-index:3000;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:20px;padding:0;max-width:460px;width:95%;max-height:92vh;overflow-y:auto;position:relative;animation:mIn .28s ease;box-shadow:0 24px 64px rgba(0,0,0,.18);">
+    <!-- Header -->
+    <div style="background:linear-gradient(135deg,#25D366,#128C7E);padding:22px 24px 18px;border-radius:20px 20px 0 0;position:relative;">
+      <button onclick="closeWAModal()" style="position:absolute;top:12px;right:14px;background:rgba(255,255,255,.2);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;">✕</button>
+      <div style="font-size:2rem;margin-bottom:6px;">📲</div>
+      <div style="font-family:'Baloo 2',sans-serif;font-size:1.3rem;font-weight:800;color:#fff;margin-bottom:3px;">WhatsApp Job Alerts</div>
+      <div style="font-size:.78rem;color:rgba(255,255,255,.88);">Free mein job alerts seedhe WhatsApp pe pao!</div>
+    </div>
+
+    <!-- Progress Steps -->
+    <div style="display:flex;align-items:center;gap:0;padding:14px 24px;border-bottom:2px solid #F0F4FF;background:#FAFFFE;">
+      <div class="wa-step active" id="wstep1">1️⃣ Job Type</div>
+      <div style="flex:1;height:2px;background:#E2E8F0;margin:0 4px;"></div>
+      <div class="wa-step" id="wstep2">2️⃣ Details</div>
+      <div style="flex:1;height:2px;background:#E2E8F0;margin:0 4px;"></div>
+      <div class="wa-step" id="wstep3">3️⃣ WhatsApp</div>
+    </div>
+
+    <div style="padding:20px 24px 24px;">
+
+      <!-- STEP 1: Job Type -->
+      <div id="waStep1">
+        <div style="font-family:'Baloo 2',sans-serif;font-size:1rem;font-weight:800;margin-bottom:4px;">Aap kaunsi naukri chahte hain? 🤔</div>
+        <div style="font-size:.78rem;color:var(--mu);margin-bottom:16px;">Apni pasand chuniye — hum ussi hisab se alerts bhejenge</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+          <div class="wa-type-card" id="wt-govt" onclick="selectWAType('govt')">
+            <div style="font-size:2rem;margin-bottom:8px;">🏛️</div>
+            <div style="font-weight:800;font-size:.92rem;margin-bottom:3px;">Sarkari Naukri</div>
+            <div style="font-size:.7rem;color:var(--mu);">SSC · Railway · Bank · Police · Army · UPSC</div>
+            <div style="margin-top:8px;background:rgba(0,135,90,.08);border-radius:6px;padding:3px 8px;font-size:.66rem;color:var(--gn);font-weight:700;">3,500+ Vacancies</div>
+          </div>
+          <div class="wa-type-card" id="wt-private" onclick="selectWAType('private')">
+            <div style="font-size:2rem;margin-bottom:8px;">💼</div>
+            <div style="font-weight:800;font-size:.92rem;margin-bottom:3px;">Private Job</div>
+            <div style="font-size:.7rem;color:var(--mu);">IT · Delivery · Teaching · Helper · More</div>
+            <div style="margin-top:8px;background:rgba(255,107,0,.08);border-radius:6px;padding:3px 8px;font-size:.66rem;color:var(--pr);font-weight:700;">10,000+ Live Jobs</div>
+          </div>
+        </div>
+        <div class="wa-type-card" id="wt-both" onclick="selectWAType('both')" style="display:flex;align-items:center;gap:12px;text-align:left;padding:14px 16px;">
+          <div style="font-size:1.6rem;">⭐</div>
+          <div style="flex:1;">
+            <div style="font-weight:800;font-size:.88rem;">Dono Chahiye!</div>
+            <div style="font-size:.7rem;color:var(--mu);">Sarkari + Private — sab alerts ek saath</div>
+          </div>
+          <div style="background:var(--grad);border-radius:8px;padding:3px 10px;font-size:.68rem;color:#fff;font-weight:700;">Popular</div>
+        </div>
+        <button class="wa-next-btn" onclick="waNext(1)" style="margin-top:14px;" id="waBtn1" disabled>Aage Badho →</button>
+      </div>
+
+      <!-- STEP 2: Preferences -->
+      <div id="waStep2" style="display:none;">
+        <div style="font-family:'Baloo 2',sans-serif;font-size:1rem;font-weight:800;margin-bottom:4px;">Thodi aur details do 📝</div>
+        <div style="font-size:.78rem;color:var(--mu);margin-bottom:14px;">Aapke profile ke hisab se best jobs bhejenge</div>
+
+        <!-- Govt specific -->
+        <div id="waGovtFields">
+          <div class="fg" style="margin-bottom:10px;">
+            <label style="font-size:.76rem;font-weight:700;color:var(--tx2);display:block;margin-bottom:4px;">📋 Kaunsi Govt Job Chahiye?</label>
+            <div style="display:flex;flex-wrap:wrap;gap:5px;" id="waGovtCats">
+              <span class="wa-chip" onclick="toggleChip(this,'wgc')">📋 SSC</span>
+              <span class="wa-chip" onclick="toggleChip(this,'wgc')">🚂 Railway</span>
+              <span class="wa-chip" onclick="toggleChip(this,'wgc')">🏦 Bank</span>
+              <span class="wa-chip" onclick="toggleChip(this,'wgc')">👮 Police</span>
+              <span class="wa-chip" onclick="toggleChip(this,'wgc')">⚔️ Army</span>
+              <span class="wa-chip" onclick="toggleChip(this,'wgc')">🎓 UPSC</span>
+              <span class="wa-chip" onclick="toggleChip(this,'wgc')">📚 Teacher</span>
+              <span class="wa-chip" onclick="toggleChip(this,'wgc')">🏥 Health</span>
+              <span class="wa-chip" onclick="toggleChip(this,'wgc')">📮 Post Office</span>
+              <span class="wa-chip" onclick="toggleChip(this,'wgc')">🛡️ Defence</span>
+              <span class="wa-chip wa-chip-all" onclick="toggleChipAll('wgc')">⭐ Sab</span>
+            </div>
+          </div>
+          <div class="fg" style="margin-bottom:10px;">
+            <label style="font-size:.76rem;font-weight:700;color:var(--tx2);display:block;margin-bottom:4px;">🎓 Qualification</label>
+            <select class="inp" id="wa_qual" style="background:#F8FAFF;">
+              <option value="">-- Chuniye --</option>
+              <option>10th Pass</option><option>12th Pass</option><option>Diploma / ITI</option>
+              <option>Graduate (Any)</option><option>B.Tech / Engineering</option>
+              <option>Medical / MBBS</option><option>Post Graduate</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Private specific -->
+        <div id="waPrivateFields" style="display:none;">
+          <div class="fg" style="margin-bottom:10px;">
+            <label style="font-size:.76rem;font-weight:700;color:var(--tx2);display:block;margin-bottom:4px;">💼 Job Category</label>
+            <div style="display:flex;flex-wrap:wrap;gap:5px;">
+              <span class="wa-chip" onclick="toggleChip(this,'wpc')">💻 IT/Dev</span>
+              <span class="wa-chip" onclick="toggleChip(this,'wpc')">🎨 Design</span>
+              <span class="wa-chip" onclick="toggleChip(this,'wpc')">🛵 Delivery</span>
+              <span class="wa-chip" onclick="toggleChip(this,'wpc')">📚 Teaching</span>
+              <span class="wa-chip" onclick="toggleChip(this,'wpc')">🔧 Helper</span>
+              <span class="wa-chip" onclick="toggleChip(this,'wpc')">🏥 Health</span>
+              <span class="wa-chip" onclick="toggleChip(this,'wpc')">🚗 Driver</span>
+              <span class="wa-chip" onclick="toggleChip(this,'wpc')">🤝 Sales</span>
+              <span class="wa-chip" onclick="toggleChip(this,'wpc')">📣 Marketing</span>
+              <span class="wa-chip" onclick="toggleChip(this,'wpc')">🍕 Food</span>
+              <span class="wa-chip wa-chip-all" onclick="toggleChipAll('wpc')">⭐ Sab</span>
+            </div>
+          </div>
+          <div class="fg" style="margin-bottom:10px;">
+            <label style="font-size:.76rem;font-weight:700;color:var(--tx2);display:block;margin-bottom:4px;">💰 Expected Salary</label>
+            <select class="inp" id="wa_sal" style="background:#F8FAFF;">
+              <option value="">-- Salary Range --</option>
+              <option>₹10,000 – ₹20,000/month</option>
+              <option>₹20,000 – ₹40,000/month</option>
+              <option>₹40,000 – ₹70,000/month</option>
+              <option>₹70,000+ /month</option>
+              <option>Daily Wage (₹400–₹800/day)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Common fields -->
+        <div class="fg" style="margin-bottom:10px;">
+          <label style="font-size:.76rem;font-weight:700;color:var(--tx2);display:block;margin-bottom:4px;">📍 Preferred City</label>
+          <select class="inp" id="wa_city" style="background:#F8FAFF;">
+            <option value="">-- City Chuniye --</option>
+            <option>Delhi NCR</option><option>Mumbai</option><option>Bangalore</option>
+            <option>Hyderabad</option><option>Pune</option><option>Chennai</option>
+            <option>Kolkata</option><option>Ahmedabad</option><option>Jaipur</option>
+            <option>Lucknow</option><option>Surat</option><option>Noida</option>
+            <option>Koi bhi City</option>
+          </select>
+        </div>
+        <div class="fg" style="margin-bottom:0;">
+          <label style="font-size:.76rem;font-weight:700;color:var(--tx2);display:block;margin-bottom:4px;">👤 Aapka Naam</label>
+          <input class="inp" type="text" id="wa_name" placeholder="Aapka naam..." style="background:#F8FAFF;"/>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:14px;">
+          <button onclick="waBack(2)" style="background:var(--bg);border:2px solid var(--bd2);color:var(--mu);padding:9px 16px;border-radius:9px;cursor:pointer;font-size:.82rem;font-weight:700;">← Wapas</button>
+          <button class="wa-next-btn" onclick="waNext(2)" style="flex:1;">WhatsApp Number Dalo →</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: WhatsApp Number -->
+      <div id="waStep3" style="display:none;">
+        <div style="font-family:'Baloo 2',sans-serif;font-size:1rem;font-weight:800;margin-bottom:4px;">📱 WhatsApp Number Do</div>
+        <div style="font-size:.78rem;color:var(--mu);margin-bottom:16px;">Hum direct WhatsApp pe jobs bhejenge — sirf aapke liye!</div>
+
+        <div style="background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border:2px solid rgba(37,211,102,.25);border-radius:12px;padding:14px;margin-bottom:14px;">
+          <div style="font-size:.76rem;font-weight:700;color:var(--gn);margin-bottom:8px;">✅ Aapko milega:</div>
+          <div id="waPreview" style="font-size:.74rem;color:var(--tx2);line-height:1.7;"></div>
+        </div>
+
+        <div class="fg" style="margin-bottom:12px;">
+          <label style="font-size:.76rem;font-weight:700;color:var(--tx2);display:block;margin-bottom:4px;">📱 WhatsApp Number *</label>
+          <div style="display:flex;gap:6px;">
+            <div style="background:#F8FAFF;border:2px solid var(--bd);border-radius:8px;padding:8px 10px;font-size:.82rem;font-weight:700;color:var(--tx2);display:flex;align-items:center;">🇮🇳 +91</div>
+            <input class="inp" type="tel" id="wa_number" placeholder="98765 43210" maxlength="10" style="background:#F8FAFF;flex:1;font-size:.95rem;font-weight:600;" oninput="this.value=this.value.replace(/[^0-9]/g,'')"/>
+          </div>
+          <div style="font-size:.68rem;color:var(--mu);margin-top:4px;">⚠️ Sirf Indian number • Spam nahi karenge</div>
+        </div>
+
+        <div class="fg" style="margin-bottom:16px;">
+          <label style="font-size:.76rem;font-weight:700;color:var(--tx2);display:block;margin-bottom:4px;">🔔 Alert Frequency</label>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:.76rem;font-weight:600;"><input type="radio" name="waFreq" value="daily" checked/> Roz (Best)</label>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:.76rem;font-weight:600;"><input type="radio" name="waFreq" value="weekly"/> Hafte mein</label>
+            <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:.76rem;font-weight:600;"><input type="radio" name="waFreq" value="instant"/> Turant (New jobs)</label>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:8px;">
+          <button onclick="waBack(3)" style="background:var(--bg);border:2px solid var(--bd2);color:var(--mu);padding:9px 16px;border-radius:9px;cursor:pointer;font-size:.82rem;font-weight:700;">← Wapas</button>
+          <button onclick="submitWAAlert()" style="flex:1;background:linear-gradient(135deg,#25D366,#128C7E);border:none;color:#fff;padding:11px;border-radius:10px;cursor:pointer;font-size:.9rem;font-weight:800;display:flex;align-items:center;justify-content:center;gap:7px;">
+            📲 WhatsApp Alert Subscribe Karo!
+          </button>
+        </div>
+        <div style="font-size:.66rem;color:var(--mu);text-align:center;margin-top:8px;">🔒 Aapka number secure hai • Kabhi share nahi karenge • Unsubscribe anytime</div>
+      </div>
+
+      <!-- SUCCESS STATE -->
+      <div id="waSuccess" style="display:none;text-align:center;padding:10px 0;">
+        <div style="font-size:3rem;margin-bottom:12px;">🎉</div>
+        <div style="font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;color:var(--gn);margin-bottom:6px;">Alert Set Ho Gaya!</div>
+        <div style="font-size:.8rem;color:var(--tx2);margin-bottom:16px;line-height:1.6;" id="waSuccessMsg"></div>
+        <div style="background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border:2px solid rgba(37,211,102,.25);border-radius:12px;padding:14px;margin-bottom:16px;font-size:.78rem;color:var(--tx2);text-align:left;line-height:1.8;" id="waWelcomeMsg"></div>
+        <button onclick="closeWAModal()" style="background:linear-gradient(135deg,#25D366,#128C7E);border:none;color:#fff;padding:11px 28px;border-radius:10px;cursor:pointer;font-size:.88rem;font-weight:700;">✅ Done!</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- FLOATING WhatsApp CTA -->
+<div id="waFloatBtn" style="position:fixed;bottom:74px;right:16px;z-index:990;animation:floatPop .4s ease;">
+  <button onclick="openWhatsAppAlert('both')" style="background:linear-gradient(135deg,#25D366,#128C7E);border:none;color:#fff;padding:12px 16px;border-radius:50px;cursor:pointer;font-size:.8rem;font-weight:800;display:flex;align-items:center;gap:8px;box-shadow:0 6px 24px rgba(37,211,102,.4);white-space:nowrap;">
+    <span style="font-size:1.2rem;">📲</span>
+    <span>Free Job Alerts</span>
+    <span style="background:rgba(255,255,255,.25);border-radius:8px;padding:1px 6px;font-size:.65rem;">WhatsApp</span>
+  </button>
+</div>
+<style>@keyframes floatPop{from{opacity:0;transform:scale(.7) translateY(20px);}to{opacity:1;transform:scale(1) translateY(0);}}</style>
+
+<!-- MODAL -->
+<div id="modal">
+  <div class="mbox">
+    <button class="mclose" onclick="closeModal()">✕</button>
+    <div style="text-align:center;margin-bottom:13px;"><div style="font-family:'Baloo 2',sans-serif;font-size:1.5rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">⚡ KaamKro</div></div>
+    <div class="mtabs"><button class="mtab active" id="lt" onclick="swTab('login')">🔑 Login</button><button class="mtab" id="rt" onclick="swTab('register')">✨ Register</button></div>
+    <div id="lform">
+      <div class="fg"><label>Email ya Phone</label><input class="inp" type="text" id="l_e" placeholder="you@email.com"/></div>
+      <div class="fg"><label>Password</label><input class="inp" type="password" id="l_p" placeholder="Password"/></div>
+      <button class="aibtn" onclick="doLogin()">🚀 Login Karo</button>
+      <div style="text-align:center;margin-top:8px;font-size:.76rem;color:var(--mu);">Ya <button onclick="guestAcc()" style="background:none;border:none;color:var(--pr);cursor:pointer;font-weight:700;font-size:.76rem;">👀 Guest Access</button></div>
+    </div>
+    <div id="rform" style="display:none;">
+      <div style="display:flex;gap:5px;margin-bottom:11px;">
+        <button id="rj" onclick="selRole('job')" style="flex:1;background:#FFF3E8;border:2px solid var(--pr);color:var(--pr);padding:7px;border-radius:7px;cursor:pointer;font-size:.77rem;font-weight:700;">👤 Job Seeker</button>
+        <button id="rc" onclick="selRole('co')" style="flex:1;background:var(--bg);border:2px solid var(--bd2);color:var(--mu);padding:7px;border-radius:7px;cursor:pointer;font-size:.77rem;font-weight:700;">🏢 Company</button>
+      </div>
+      <div class="fg"><label>Poora Naam *</label><input class="inp" type="text" id="rn" placeholder="Aapka naam"/></div>
+      <div class="fg"><label>Phone *</label><input class="inp" type="tel" id="rph" placeholder="+91 98765 43210"/></div>
+      <div class="fg"><label>Email *</label><input class="inp" type="email" id="rem" placeholder="you@email.com"/></div>
+      <div class="fg"><label>Password *</label><input class="inp" type="password" id="rpw" placeholder="Strong password"/></div>
+      <div class="fg"><label>City</label><input class="inp" type="text" id="rci" placeholder="Delhi NCR"/></div>
+      <button class="aibtn" onclick="doRegister()">✅ Account Banao</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ─────────────── CONSTANTS ───────────────
+const API='https://kaamconnect-api.onrender.com';
+const ADMIN_USER='admin', ADMIN_PASS='kaamkro@2025';
+const CITIES={india:['Delhi','Mumbai','Bangalore','Hyderabad','Pune','Chennai','Kolkata','Ahmedabad','Jaipur','Lucknow'],uae:['Dubai','Abu Dhabi','Sharjah'],usa:['New York','Los Angeles','San Francisco','Chicago'],uk:['London','Manchester','Birmingham'],canada:['Toronto','Vancouver','Calgary'],australia:['Sydney','Melbourne','Brisbane'],singapore:['Singapore'],germany:['Berlin','Munich','Hamburg'],remote:['Remote / WFH']};
+const CITY_COORDS={delhi:[28.6139,77.209],mumbai:[19.076,72.8777],bangalore:[12.9716,77.5946],hyderabad:[17.385,78.4867],pune:[18.5204,73.8567],chennai:[13.0827,80.2707],kolkata:[22.5726,88.3639],ahmedabad:[23.0225,72.5714],jaipur:[26.9124,75.7873],lucknow:[26.8467,80.9462],noida:[28.5355,77.391],surat:[21.1702,72.8311],chandigarh:[30.7333,76.7794],india:[22.5937,78.9629]};
+const ICONS={Development:'💻',Design:'🎨',Teaching:'📚',Delivery:'🛵',Driver:'🚗',Helper:'🔧',Health:'🏥',Sales:'🤝',Marketing:'📣',Finance:'💰',Content:'✍️',Food:'🍕',Remote:'🌍'};
+const CATS=[{icon:'💻',name:'Development',count:'1,200+'},{icon:'🎨',name:'Design',count:'850+'},{icon:'📚',name:'Teaching',count:'1,500+'},{icon:'🛵',name:'Delivery',count:'3,200+'},{icon:'🚗',name:'Driver',count:'900+'},{icon:'🔧',name:'Helper',count:'2,100+'},{icon:'🏥',name:'Healthcare',count:'700+'},{icon:'🤝',name:'Sales',count:'1,800+'},{icon:'📣',name:'Marketing',count:'640+'},{icon:'💰',name:'Finance',count:'480+'},{icon:'🍕',name:'Food',count:'1,100+'},{icon:'🏛️',name:'Sarkari',count:'3,500+'}];
+
+// ─────────────── LOCAL JOB DATA ───────────────
+let JOBS=[
+  {id:1,title:'React Developer',co:'TechMind Solutions',icon:'💻',cat:'Development',type:'Full-time',loc:'Bangalore',sal:'₹60K–₹90K/mo',sk:['React','Node.js'],badge:'featured',status:'live'},
+  {id:2,title:'Delivery Executive',co:'Zomato',icon:'🛵',cat:'Delivery',type:'Full-time',loc:'Delhi',sal:'₹18K–₹25K/mo',sk:['Bike','Smartphone'],badge:'hot',urgent:true,status:'live'},
+  {id:3,title:'Graphic Designer',co:'CreativeHub',icon:'🎨',cat:'Design',type:'Freelance',loc:'Remote',sal:'₹20K–₹40K/mo',sk:['Figma','Photoshop'],badge:'new',status:'live'},
+  {id:4,title:'Math Teacher',co:'Delhi Public School',icon:'📚',cat:'Teaching',type:'Full-time',loc:'Delhi',sal:'₹30K–₹45K/mo',sk:['Mathematics'],badge:'',status:'live'},
+  {id:5,title:'Android Developer',co:'AppNation',icon:'📱',cat:'Development',type:'Full-time',loc:'Hyderabad',sal:'₹55K–₹80K/mo',sk:['Kotlin','Java'],badge:'featured',status:'live'},
+  {id:6,title:'Car Driver',co:'Ola',icon:'🚗',cat:'Driver',type:'Part-time',loc:'Mumbai',sal:'₹25K–₹35K/mo',sk:['Driving License'],badge:'hot',urgent:true,status:'live'},
+  {id:7,title:'Content Writer',co:'ContentKing',icon:'✍️',cat:'Content',type:'Work From Home',loc:'Remote',sal:'₹15K–₹30K/mo',sk:['Hindi Writing','SEO'],badge:'new',status:'live'},
+  {id:8,title:'Nurse / GNM',co:'Apollo Hospital',icon:'🏥',cat:'Health',type:'Full-time',loc:'Chennai',sal:'₹28K–₹40K/mo',sk:['GNM'],badge:'',urgent:true,status:'live'},
+  {id:9,title:'Sales Executive',co:'HDFC Bank',icon:'💰',cat:'Sales',type:'Full-time',loc:'Pune',sal:'₹22K–₹35K/mo',sk:['Communication'],badge:'featured',status:'live'},
+  {id:10,title:'Construction Helper',co:'BuildRight',icon:'🔧',cat:'Helper',type:'Daily Wage',loc:'Mumbai',sal:'₹500–₹700/day',sk:['Labour'],badge:'hot',urgent:true,status:'live'},
+  {id:11,title:'Digital Marketing Manager',co:'GrowthHack',icon:'📣',cat:'Marketing',type:'Full-time',loc:'Bangalore',sal:'₹40K–₹65K/mo',sk:['SEO','Facebook Ads'],badge:'new',status:'live'},
+  {id:12,title:'Data Entry Operator',co:'DataPro',icon:'💾',cat:'Development',type:'Work From Home',loc:'Remote',sal:'₹12K–₹18K/mo',sk:['MS Excel'],badge:'',status:'live'},
+  {id:13,title:'HR Executive',co:'PeopleFirst',icon:'🤝',cat:'Sales',type:'Full-time',loc:'Delhi',sal:'₹25K–₹40K/mo',sk:['Recruitment','HR'],badge:'new',status:'live'},
+  {id:14,title:'Plumber',co:'FixIt Services',icon:'🔧',cat:'Helper',type:'Daily Wage',loc:'Mumbai',sal:'₹600–₹900/day',sk:['Plumbing'],badge:'hot',urgent:true,status:'live'},
+  {id:15,title:'Python Developer',co:'DataSoft',icon:'💻',cat:'Development',type:'Full-time',loc:'Pune',sal:'₹50K–₹85K/mo',sk:['Python','Django'],badge:'featured',status:'live'},
+  {id:16,title:'Food Delivery Boy',co:'Swiggy',icon:'🍕',cat:'Food',type:'Full-time',loc:'Delhi',sal:'₹16K–₹22K/mo',sk:['Bike','Smartphone'],badge:'hot',urgent:true,status:'live'},
+  {id:17,title:'Security Guard',co:'SecureForce',icon:'🛡️',cat:'Helper',type:'Full-time',loc:'Bangalore',sal:'₹15K–₹20K/mo',sk:['Alert'],badge:'',status:'live'},
+  {id:18,title:'UI/UX Designer',co:'PixelCraft',icon:'🎨',cat:'Design',type:'Full-time',loc:'Hyderabad',sal:'₹45K–₹70K/mo',sk:['Figma','Adobe XD'],badge:'new',status:'live'},
+  {id:19,title:'Auto Driver',co:'Rapido',icon:'🛺',cat:'Driver',type:'Part-time',loc:'Chennai',sal:'₹18K–₹28K/mo',sk:['Auto License'],badge:'hot',status:'live'},
+  {id:20,title:'Accountant',co:'FinTrack',icon:'💰',cat:'Finance',type:'Full-time',loc:'Ahmedabad',sal:'₹20K–₹32K/mo',sk:['Tally','Excel'],badge:'',status:'live'},
+  {id:21,title:'Cook / Chef',co:'Hotel Grand',icon:'👨‍🍳',cat:'Food',type:'Full-time',loc:'Jaipur',sal:'₹18K–₹30K/mo',sk:['Cooking'],badge:'new',status:'live'},
+  {id:22,title:'Social Media Manager',co:'BrandBuzz',icon:'📣',cat:'Marketing',type:'Work From Home',loc:'Remote',sal:'₹25K–₹45K/mo',sk:['Instagram','Meta Ads'],badge:'featured',status:'live'},
+  {id:23,title:'Lab Technician',co:'HealthCare Plus',icon:'🔬',cat:'Health',type:'Full-time',loc:'Mumbai',sal:'₹22K–₹35K/mo',sk:['Lab Testing'],badge:'',status:'live'},
+  {id:24,title:'Warehouse Worker',co:'Amazon India',icon:'📦',cat:'Helper',type:'Full-time',loc:'Delhi',sal:'₹16K–₹22K/mo',sk:['Physical Fitness'],badge:'hot',urgent:true,status:'live'},
+  {id:25,title:'Video Editor',co:'ContentPro',icon:'🎬',cat:'Design',type:'Freelance',loc:'Remote',sal:'₹20K–₹50K/mo',sk:['Premiere Pro'],badge:'new',status:'live'},
+  {id:26,title:'BPO Agent',co:'TeleConnect',icon:'📞',cat:'Sales',type:'Full-time',loc:'Hyderabad',sal:'₹14K–₹22K/mo',sk:['Communication','English'],badge:'',status:'live'},
+  {id:27,title:'Electrician',co:'PowerTech',icon:'⚡',cat:'Helper',type:'Daily Wage',loc:'Bangalore',sal:'₹700–₹1,200/day',sk:['Electrical','Wiring'],badge:'hot',urgent:true,status:'live'},
+  {id:28,title:'Node.js Developer',co:'StartupXYZ',icon:'💻',cat:'Development',type:'Full-time',loc:'Bangalore',sal:'₹55K–₹90K/mo',sk:['Node.js','MongoDB'],badge:'featured',status:'live'},
+  {id:29,title:'English Teacher',co:'Speak Well Academy',icon:'📚',cat:'Teaching',type:'Part-time',loc:'Kolkata',sal:'₹20K–₹35K/mo',sk:['English'],badge:'',status:'live'},
+  {id:30,title:'Zomato Delivery',co:'Zomato',icon:'🍕',cat:'Food',type:'Full-time',loc:'Mumbai',sal:'₹18K–₹26K/mo',sk:['Bike','App Usage'],badge:'hot',urgent:true,status:'live'},
+];
+
+let GOVT=[
+  {id:1,org:'SSC',title:'Combined Graduate Level (CGL) 2025',posts:'17,727',date:'31 May 2025',pay:'₹25,500–₹81,100',cat:'SSC',state:'Central'},
+  {id:2,org:'Indian Railways',title:'RRB NTPC Graduate Level 2025',posts:'11,558',date:'15 Jun 2025',pay:'₹19,900–₹35,400',cat:'Railway',state:'Central'},
+  {id:3,org:'SBI',title:'SBI Clerk (Junior Associate) 2025',posts:'13,735',date:'28 May 2025',pay:'₹17,900–₹47,920',cat:'Bank',state:'Central'},
+  {id:4,org:'Delhi Police',title:'Delhi Police Constable 2025',posts:'5,000',date:'10 Jun 2025',pay:'₹21,700–₹69,100',cat:'Police',state:'Delhi'},
+  {id:5,org:'Indian Army',title:'Agniveer Soldier 2025',posts:'25,000+',date:'20 Jun 2025',pay:'₹30,000 Package',cat:'Army',state:'Central'},
+  {id:6,org:'UPSC',title:'Civil Services Prelims 2025',posts:'1,056',date:'16 Jun 2025',pay:'Grade Pay per Post',cat:'UPSC',state:'Central'},
+  {id:7,org:'UP PSC',title:'UP Combined State Services 2025',posts:'220',date:'30 May 2025',pay:'₹9,300–₹34,800',cat:'State PSC',state:'UP'},
+  {id:8,org:'KVS',title:'Kendriya Vidyalaya Teacher 2025',posts:'3,000+',date:'5 Jun 2025',pay:'₹44,900–₹1,42,400',cat:'Teacher',state:'Central'},
+  {id:9,org:'ESIC',title:'Staff Nurse & Paramedical 2025',posts:'1,930',date:'25 May 2025',pay:'₹35,400–₹1,12,400',cat:'Health',state:'Central'},
+  {id:10,org:'RPSC',title:'RAS / RTS Combined Services 2025',posts:'905',date:'1 Jun 2025',pay:'₹15,600–₹67,000',cat:'State PSC',state:'Rajasthan'},
+  {id:11,org:'India Post',title:'GDS / Postman Recruitment 2025',posts:'44,228',date:'25 May 2025',pay:'₹12,000–₹29,380',cat:'Post Office',state:'Central'},
+  {id:12,org:'BSF',title:'BSF Head Constable (Ministerial)',posts:'1,526',date:'18 Jun 2025',pay:'₹25,500–₹81,100',cat:'Defence',state:'Central'},
+];
+
+// Live jobs from API
+let LIVE_JOBS=[];
+let livePage=0;
+let savedJobs=new Set();
+let activeCat='';
+let srcMode='live';
+let govtTimerInterval;
+let govtTimerSecs=3600;
+let mapInstance=null;
+let mapMarkers=[];
+let editJId=null;
+let selPV='free';
+let isHindi=false;
+
+const CHATS=[
+  {n:'Zomato Recruiter',av:'🧑‍💼',bg:'#FF6B00',pr:'Interview Kal 10 baje hai',unr:2},
+  {n:'TechMind HR',av:'👩‍💼',bg:'#3182CE',pr:'Please share portfolio link',unr:1},
+  {n:'Delhi PS Admin',av:'🏫',bg:'#00875A',pr:'Documents ready hain',unr:0},
+  {n:'Freelance Client',av:'👨‍💻',bg:'#7C3AED',pr:'Project kab complete hoga?',unr:0},
+];
+const MSGS={
+  0:[{me:false,t:'Namaste! Aap Delivery Executive ke liye apply kiye?',tm:'10:02'},{me:true,t:'Haan, koi update?',tm:'10:05'},{me:false,t:'Shortlist hua hai! Interview kal 10 baje.',tm:'10:06'},{me:true,t:'Thank you! Address bhejiye.',tm:'10:08'},{me:false,t:'Connaught Place, Block A, GF 😊',tm:'10:09'}],
+  1:[{me:false,t:'Hi! GitHub share karo.',tm:'Yesterday'},{me:true,t:'github.com/myprofile',tm:'Yesterday'},{me:false,t:'Looks great!',tm:'Yesterday'}],
+};
+const NOTIFS=[
+  {icon:'🎉',title:'Interview Shortlist!',sub:'Zomato ne aapko shortlist kiya — Kal 10 baje',unread:true},
+  {icon:'💼',title:'New Job Match',sub:'React Developer — TechMind Solutions, Bangalore',unread:true},
+  {icon:'🔔',title:'Govt Alert',sub:'SSC CGL 2025 — Last date 31 May 2025',unread:true},
+  {icon:'👑',title:'Premium Offer',sub:'Gold plan 50% off — Sirf aaj!',unread:false},
+];
+
+// ── NAVIGATION ──
+const SM={home:'homeSection',jobs:'jobsSection',govt:'govtSection',map:'mapSection',chat:'chatSection',resume:'resumeSection',profile:'profileSection',dash:'dashSection',post:'postSection',premium:'premiumSection',ads:'adsSection',admin:'adminSection'};
+function showSec(n,btn){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.bnnb').forEach(b=>b.classList.remove('active'));
+  const el=document.getElementById(SM[n]);if(el)el.classList.add('active');
+  if(btn)btn.classList.add('active');
+  window.scrollTo(0,0);
+  if(n==='map'&&!mapInstance)setTimeout(initMap,200);
+  if(n==='map'&&mapInstance)mapInstance.invalidateSize();
+}
+function go(n){showSec(n);const mN=document.getElementById('mNav');mN.style.display='none';}
+function toggleNav(){const n=document.getElementById('mNav');n.style.display=n.style.display==='flex'?'none':'flex';}
+
+// ── NOTIFICATIONS ──
+function toggleNotif(){
+  const p=document.getElementById('notifPanel');
+  p.style.display=p.style.display==='block'?'none':'block';
+}
+function renderNotifs(){
+  const l=document.getElementById('notifList');if(!l)return;
+  l.innerHTML=NOTIFS.map(n=>`<div class="notif-item ${n.unread?'unread':''}" onclick="document.getElementById('notifPanel').style.display='none'"><div class="notif-icon">${n.icon}</div><div><div class="notif-title">${n.title}</div><div class="notif-sub">${n.sub}</div></div></div>`).join('');
+}
+function clearNotifs(){
+  NOTIFS.forEach(n=>n.unread=false);
+  document.getElementById('notifBadge').style.display='none';
+  document.getElementById('notifList').querySelectorAll('.notif-item').forEach(i=>i.classList.remove('unread'));
+  toast('Notifications clear ho gayi!','info');
+}
+document.addEventListener('click',function(e){
+  const p=document.getElementById('notifPanel');
+  const btn=document.querySelector('.notif-btn');
+  if(p&&btn&&!p.contains(e.target)&&!btn.contains(e.target))p.style.display='none';
+});
+
+// ── LANGUAGE TOGGLE ──
+function toggleLang(){isHindi=!isHindi;toast(isHindi?'Hindi mode active!':'English mode active!','info');}
+
+// ── CATS ──
+function renderCats(){
+  const g=document.getElementById('catGrid');if(!g)return;
+  g.innerHTML=CATS.map(c=>`<div class="cat" onclick="${c.name==='Sarkari'?'showSec(\'govt\')':'filterByCat(\''+c.name+'\')'}" ><div class="ci">${c.icon}</div><div class="cn">${c.name}</div><div class="cc">${c.count}</div></div>`).join('');
+}
+function filterByCat(n){
+  activeCat=n;showSec('jobs');
+  document.querySelectorAll('.cattab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.cattab').forEach(t=>{if(t.textContent.includes(n))t.classList.add('active');});
+  if(srcMode==='local')renderLocalJobs();else renderLiveFiltered();
+}
+
+// ── LIVE API JOBS ──
+async function loadLiveJobs(){
+  livePage=0;LIVE_JOBS=[];
+  const g=document.getElementById('jgrid');
+  if(g)g.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--mu);"><div class="ldots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><div style="margin-top:10px;font-weight:600;">Live jobs load ho rahi hain...</div></div>';
+  try{
+    // Try multiple endpoints
+    const endpoints=[`${API}/api/jobs?limit=20&page=0`,`${API}/api/live?limit=20`,`${API}/api/search?q=developer&limit=10`];
+    let allJobs=[];
+    for(const ep of endpoints){
+      try{
+        const r=await fetch(ep);if(!r.ok)continue;
+        const d=await r.json();
+        const jobs=d.jobs||d.results||d.data||d||[];
+        if(Array.isArray(jobs)&&jobs.length>0){allJobs=[...allJobs,...jobs];}
+      }catch(e){}
+    }
+    if(allJobs.length>0){
+      LIVE_JOBS=allJobs.map((j,i)=>({
+        id:'live_'+i,
+        title:j.title||j.job_title||'Job Opening',
+        co:j.company||j.companyName||j.employer||'Company',
+        icon:ICONS[j.category]||'💼',
+        cat:j.category||mapCat(j.title||''),
+        type:j.type||j.jobType||j.contract_type||'Full-time',
+        loc:j.location||j.city||j.place||'India',
+        sal:j.salary||j.pay||formatSal(j.salary_min,j.salary_max)||'Negotiable',
+        sk:(j.skills||j.tags||[]).slice(0,3),
+        badge:i<3?['featured','hot','new'][i]:'',
+        isLive:true,
+        url:j.redirect_url||j.url||'#'
+      }));
+      renderLiveFiltered();
+      const cnt=document.getElementById('jcnt');if(cnt)cnt.textContent=LIVE_JOBS.length+' Live Jobs';
+      toast(`${LIVE_JOBS.length} live jobs load hui! 🔴`,'success');
+    } else {
+      // Use local jobs as fallback
+      LIVE_JOBS=JOBS.map(j=>({...j,isLive:false}));
+      renderLiveFiltered();
+      toast('API se local jobs load ki gayi','info');
+    }
+  }catch(e){
+    LIVE_JOBS=JOBS.map(j=>({...j,isLive:false}));
+    renderLiveFiltered();
+    toast('Local database se jobs load ki gayi','info');
+  }
+}
+function mapCat(title){
+  title=title.toLowerCase();
+  if(title.includes('develop')||title.includes('engineer')||title.includes('program'))return 'Development';
+  if(title.includes('design')||title.includes('ui')||title.includes('ux'))return 'Design';
+  if(title.includes('teach')||title.includes('tutor')||title.includes('faculty'))return 'Teaching';
+  if(title.includes('deliver')||title.includes('rider'))return 'Delivery';
+  if(title.includes('driver')||title.includes('driving'))return 'Driver';
+  if(title.includes('nurse')||title.includes('doctor')||title.includes('health'))return 'Health';
+  if(title.includes('market')||title.includes('seo')||title.includes('social'))return 'Marketing';
+  if(title.includes('sales')||title.includes('business'))return 'Sales';
+  if(title.includes('account')||title.includes('finance'))return 'Finance';
+  if(title.includes('cook')||title.includes('chef')||title.includes('food'))return 'Food';
+  return 'Development';
+}
+function formatSal(min,max){if(!min&&!max)return null;if(min&&max)return `₹${Math.round(min/1000)}K–₹${Math.round(max/1000)}K/yr`;if(min)return `₹${Math.round(min/1000)}K+/yr`;return null;}
+function renderLiveFiltered(){
+  const q=(document.getElementById('jsrch')||{}).value?.toLowerCase()||'';
+  const type=(document.getElementById('jtype')||{}).value||'';
+  const city=(document.getElementById('jcity_f')||{}).value||'';
+  const sal=(document.getElementById('jsal_f')||{}).value||'';
+  const src=LIVE_JOBS.length>0?LIVE_JOBS:JOBS.map(j=>({...j,isLive:false}));
+  const filtered=src.filter(j=>{
+    if(activeCat&&j.cat!==activeCat)return false;
+    if(q&&!(j.title+' '+j.co+' '+(j.sk||[]).join(' ')).toLowerCase().includes(q))return false;
+    if(type&&j.type!==type)return false;
+    if(city&&!j.loc.toLowerCase().includes(city.toLowerCase()))return false;
+    return true;
+  });
+  renderJobGrid(filtered,'jgrid');
+  const cnt=document.getElementById('jcnt');if(cnt)cnt.textContent=filtered.length+' Jobs';
+}
+function renderLocalJobs(){
+  const q=(document.getElementById('jsrch')||{}).value?.toLowerCase()||'';
+  const type=(document.getElementById('jtype')||{}).value||'';
+  const city=(document.getElementById('jcity_f')||{}).value||'';
+  const src=JOBS.filter(j=>{
+    if(j.status==='closed')return false;
+    if(activeCat&&j.cat!==activeCat)return false;
+    if(q&&!(j.title+' '+j.co+' '+(j.sk||[]).join(' ')).toLowerCase().includes(q))return false;
+    if(type&&j.type!==type)return false;
+    if(city&&!j.loc.toLowerCase().includes(city.toLowerCase()))return false;
+    return true;
+  });
+  renderJobGrid(src,'jgrid');
+  const cnt=document.getElementById('jcnt');if(cnt)cnt.textContent=src.length+' Local Jobs';
+}
+function renderJobGrid(jobs,gridId){
+  const g=document.getElementById(gridId);if(!g)return;
+  g.innerHTML=jobs.length?jobs.map(j=>jCard(j)).join(''):`<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--mu);"><div style="font-size:2.5rem;margin-bottom:8px;">😔</div><div style="font-weight:700;">Koi job nahi mili</div><div style="font-size:.8rem;margin-top:4px;">Filter change karo</div></div>`;
+}
+function jCard(j){
+  const isSaved=savedJobs.has(String(j.id));
+  return`<div class="jcard ${j.isLive?'live-card':''}" onclick="applyJob('${j.id}','${(j.title||'').replace(/'/g,'')}','${j.url||''}')">
+    ${j.badge?`<div class="jbdg ${j.badge}">${j.badge==='live'?'🔴 LIVE':j.badge.toUpperCase()}</div>`:''}
+    <div class="jhead"><div class="jlogo ${j.isLive?'live':''}">${j.icon||'💼'}</div><div style="flex:1;min-width:0;"><div class="jtitle">${j.title}</div><div class="jco">${j.co}</div></div></div>
+    <div class="jtags">
+      <span class="jt ft">${j.type}</span>
+      ${(j.loc||'').includes('Remote')?'<span class="jt rm">🌍 Remote</span>':`<span class="jt">📍 ${j.loc}</span>`}
+      ${j.urgent?'<span class="jt ug">⚡ Urgent</span>':''}
+      ${j.isLive?'<span class="jt lv">🔴 Live</span>':''}
+      ${(j.sk||[]).slice(0,2).map(s=>`<span class="jt">${s}</span>`).join('')}
+    </div>
+    <div class="jfoot"><div class="jsal">${j.sal||j.salary||'Negotiable'}</div>
+      <div class="jfoot-right">
+        <button class="save-btn ${isSaved?'saved':''}" onclick="event.stopPropagation();toggleSave('${j.id}',this)" title="Save Job">${isSaved?'🔖':'🔖'}</button>
+        <button class="abtn" onclick="event.stopPropagation();applyJob('${j.id}','${(j.title||'').replace(/'/g,'')}','${j.url||''}')">Apply →</button>
+      </div>
+    </div>
+  </div>`;
+}
+function switchSrc(mode,btn){
+  srcMode=mode;
+  document.querySelectorAll('.srctab').forEach(t=>t.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  document.getElementById('loadMoreLive').style.display=mode==='live'?'block':'none';
+  document.getElementById('loadMoreLocal').style.display=mode==='local'?'block':'none';
+  if(mode==='live')renderLiveFiltered();else renderLocalJobs();
+}
+function filterJobs(){activeCat='';if(srcMode==='live')renderLiveFiltered();else renderLocalJobs();}
+function clearJF(){['jsrch','jctry','jstate','jcity_f','jtype','jsal_f'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});activeCat='';document.querySelectorAll('.cattab').forEach(t=>t.classList.remove('active'));document.querySelector('.cattab').classList.add('active');if(srcMode==='live')renderLiveFiltered();else renderLocalJobs();}
+async function loadMoreLiveJobs(){
+  livePage++;
+  try{
+    const r=await fetch(`${API}/api/jobs?limit=20&page=${livePage}`);if(!r.ok)return;
+    const d=await r.json();const jobs=d.jobs||d||[];
+    if(jobs.length>0){
+      const mapped=jobs.map((j,i)=>({id:'live_p'+livePage+'_'+i,title:j.title||'Job Opening',co:j.company||'Company',icon:'💼',cat:mapCat(j.title||''),type:j.type||'Full-time',loc:j.location||'India',sal:j.salary||'Negotiable',sk:[],badge:'',isLive:true}));
+      LIVE_JOBS=[...LIVE_JOBS,...mapped];renderLiveFiltered();
+      toast(`${mapped.length} aur jobs load hui!`,'info');
+    }else toast('Koi aur jobs nahi hain.','info');
+  }catch(e){toast('Refresh karo','error');}
+}
+
+// ── SAVE JOBS ──
+function toggleSave(id,btn){
+  if(savedJobs.has(id)){savedJobs.delete(id);btn.classList.remove('saved');toast('Job unsaved!','info');}
+  else{savedJobs.add(id);btn.classList.add('saved');toast('Job saved! 🔖','success');}
+  const cnt=document.getElementById('savedCount');if(cnt)cnt.textContent=savedJobs.size+' saved';
+  renderSavedJobs();
+}
+function renderSavedJobs(){
+  const l=document.getElementById('savedJobsList');if(!l)return;
+  const saved=[...JOBS,...LIVE_JOBS].filter(j=>savedJobs.has(String(j.id)));
+  if(!saved.length){l.innerHTML='<div style="text-align:center;padding:18px;color:var(--mu);font-size:.82rem;">Koi saved job nahi. Jobs mein 🔖 click karo!</div>';return;}
+  l.innerHTML=saved.map(j=>`<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--bd);"><div style="font-size:1.3rem;">${j.icon||'💼'}</div><div style="flex:1;"><div style="font-size:.82rem;font-weight:700;">${j.title}</div><div style="font-size:.7rem;color:var(--mu);">${j.co} • ${j.loc}</div></div><div style="font-size:.76rem;color:var(--pr);font-weight:700;">${j.sal||j.salary||''}</div></div>`).join('');
+}
+function applyJob(id,title,url){
+  if(url&&url!=='#'){window.open(url,'_blank');}
+  toast(`"${title}" ke liye apply kiya! 🎉`,'success');
+  addAppHistory(title);
+}
+function addAppHistory(title){
+  const h=document.getElementById('appHist');if(!h)return;
+  const item=document.createElement('div');item.className='approw';
+  item.innerHTML=`<div class="app-av">💼</div><div><div class="app-n">${title}</div><div class="app-r">Just Now</div></div><span class="app-s new">Applied</span>`;
+  h.prepend(item);
+}
+
+// ── GOVT JOBS ──
+function renderGovt(list){
+  const g=document.getElementById('ggrid');if(!g)return;
+  const vcnt=document.getElementById('govtVacancies');if(vcnt)vcnt.textContent=list.reduce((s,g)=>s+parseInt((g.posts||'0').replace(/[^0-9]/g,'')||0),0).toLocaleString();
+  g.innerHTML=list.map(item=>`<div class="gcard"><div class="gorg">${item.org}</div><h3>${item.title}</h3><div class="gmeta"><span>📋 ${item.posts} Posts</span><span>💰 ${item.pay}</span><span class="gdl">⏰ ${item.date}</span></div><div style="margin-top:9px;display:flex;justify-content:space-between;align-items:center;"><button class="nbtn" onclick="toast('Alert set! 🔔','success')">🔔 Alert</button><button style="background:none;border:2px solid var(--bd);color:var(--tx2);padding:4px 11px;border-radius:6px;cursor:pointer;font-size:.72rem;font-weight:700;" onclick="toast('Official site pe redirect ho raha hai...','info')">Apply →</button></div></div>`).join('');
+}
+let activeGovtState='all';
+function filterGovtState(state,btn){
+  activeGovtState=state;
+  document.querySelectorAll('.stab').forEach(t=>t.classList.remove('active'));if(btn)btn.classList.add('active');
+  const base=activeGovtState==='all'?GOVT:GOVT.filter(g=>g.state===activeGovtState);
+  const cat=document.querySelector('.gtab.active')?.textContent||'';
+  renderGovt(cat.includes('Sab')?base:base.filter(g=>g.cat===cat.replace(/[🚂🏦📋👮⚔️🎓📚🏥🗺️🛡️📮]\s*/,'')));
+}
+function fG(cat,btn){
+  document.querySelectorAll('.gtab').forEach(t=>t.classList.remove('active'));if(btn)btn.classList.add('active');
+  const base=activeGovtState==='all'?GOVT:GOVT.filter(g=>g.state===activeGovtState);
+  renderGovt(cat==='all'?base:base.filter(g=>g.cat===cat));
+}
+function refreshGovt(){renderGovt(GOVT);const lu=document.getElementById('govtLastUpdate');if(lu)lu.textContent=new Date().toLocaleTimeString('hi-IN');govtTimerSecs=3600;toast('Govt jobs refresh ho gayi!','success');}
+function startGovtTimer(){
+  govtTimerSecs=3600;
+  clearInterval(govtTimerInterval);
+  govtTimerInterval=setInterval(()=>{
+    govtTimerSecs--;
+    const m=Math.floor(govtTimerSecs/60),s=govtTimerSecs%60;
+    const el=document.getElementById('govtTimer');if(el)el.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    if(govtTimerSecs<=0){refreshGovt();}
+  },1000);
+}
+
+// ── MAP ──
+function initMap(){
+  if(mapInstance)return;
+  try{
+    mapInstance=L.map('leafletMap').setView([22.5937,78.9629],5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(mapInstance);
+    addMapMarkers(JOBS);
+    const cnt=document.getElementById('mapJobCount');if(cnt)cnt.textContent=JOBS.length;
+  }catch(e){const m=document.getElementById('leafletMap');if(m)m.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--mu);flex-direction:column;gap:8px;"><div style="font-size:2rem;">🗺️</div><div>Map load ho raha hai...</div><div style="font-size:.75rem;">Internet connection check karo</div></div>';}
+}
+function addMapMarkers(jobs){
+  if(!mapInstance)return;
+  mapMarkers.forEach(m=>m.remove());mapMarkers=[];
+  const cityGroups={};
+  jobs.forEach(j=>{
+    const city=(j.loc||'india').toLowerCase().split(',')[0].trim();
+    if(!cityGroups[city])cityGroups[city]=[];
+    cityGroups[city].push(j);
+  });
+  Object.entries(cityGroups).forEach(([city,cityJobs])=>{
+    const coords=CITY_COORDS[city]||CITY_COORDS.india;
+    if(!coords)return;
+    const popupContent=`<div style="font-family:'Noto Sans',sans-serif;min-width:180px;"><strong style="color:#FF6B00;">📍 ${city.charAt(0).toUpperCase()+city.slice(1)}</strong><br><small style="color:#7A8099;">${cityJobs.length} jobs available</small>${cityJobs.slice(0,3).map(j=>`<div style="margin-top:6px;padding:5px;background:#F5F7FA;border-radius:6px;font-size:11px;"><b>${j.title}</b><br>${j.co} • ${j.sal||j.salary||'Negotiable'}</div>`).join('')}</div>`;
+    const marker=L.circleMarker([coords[0]+(Math.random()-.5)*.1,coords[1]+(Math.random()-.5)*.1],{radius:Math.min(8+cityJobs.length,18),fillColor:'#FF6B00',color:'#fff',weight:2,opacity:1,fillOpacity:.85}).bindPopup(popupContent).addTo(mapInstance);
+    mapMarkers.push(marker);
+  });
+}
+function jumpToCity(){
+  const city=document.getElementById('mapCity').value;
+  const coords=CITY_COORDS[city];
+  if(coords&&mapInstance){mapInstance.setView(coords,city==='india'?5:12);const v=document.getElementById('mapView');if(v)v.textContent=city.charAt(0).toUpperCase()+city.slice(1);}
+}
+function filterMapJobs(){
+  const q=(document.getElementById('mapSearch')||{}).value?.toLowerCase()||'';
+  const cat=(document.getElementById('mapCat')||{}).value||'';
+  const filtered=JOBS.filter(j=>(!q||(j.title+' '+j.co).toLowerCase().includes(q))&&(!cat||j.cat.includes(cat)));
+  addMapMarkers(filtered);
+  renderMapList(filtered);
+  const cnt=document.getElementById('mapJobCount');if(cnt)cnt.textContent=filtered.length;
+}
+function renderMapList(jobs){
+  const l=document.getElementById('mapJobsList');if(!l)return;
+  l.innerHTML=jobs.slice(0,6).map(j=>`<div class="jcard" onclick="applyJob('${j.id}','${(j.title||'').replace(/'/g,'')}','')"><div class="jhead"><div class="jlogo">${j.icon||'💼'}</div><div><div class="jtitle">${j.title}</div><div class="jco">${j.co}</div></div></div><div class="jtags"><span class="jt ft">${j.type}</span><span class="jt">📍 ${j.loc}</span></div><div class="jfoot"><div class="jsal">${j.sal||j.salary||'Negotiable'}</div><button class="abtn">Apply →</button></div></div>`).join('');
+}
+function locateUser(){
+  if(!navigator.geolocation){toast('Location supported nahi hai','error');return;}
+  navigator.geolocation.getCurrentPosition(pos=>{
+    if(mapInstance){mapInstance.setView([pos.coords.latitude,pos.coords.longitude],13);L.circleMarker([pos.coords.latitude,pos.coords.longitude],{radius:10,fillColor:'#3182CE',color:'#fff',weight:3,fillOpacity:.9}).bindPopup('<b>📍 Aap yahaan hain</b>').addTo(mapInstance).openPopup();}
+    toast('Aapki location detect ho gayi! 📍','success');
+  },err=>toast('Location access do aur dobara try karo','error'));
+}
+
+// ── SALARY PREDICTOR ──
+async function predictSalary(){
+  const skill=document.getElementById('sp_skill').value.trim();
+  const exp=parseInt(document.getElementById('sp_exp').value)||0;
+  const city=document.getElementById('sp_city').value;
+  const edu=document.getElementById('sp_edu').value;
+  if(!skill){toast('Skill ya role enter karo!','error');return;}
+  const el=document.getElementById('salResult');el.style.display='block';
+  document.getElementById('salAmount').textContent='⏳ Calculating...';
+  // Salary logic based on skill + exp + city
+  const bases={developer:45000,react:60000,python:55000,node:55000,teacher:28000,delivery:20000,driver:25000,helper:14000,nurse:32000,designer:38000,marketer:32000,sales:25000,accountant:22000,chef:22000,cook:18000,security:16000};
+  const cityMult={Delhi:1.1,Mumbai:1.15,Bangalore:1.2,Hyderabad:1.15,Pune:1.1,Chennai:1.05,Kolkata:1.0,'Small Town':0.8};
+  const eduMult={'10th Pass':0.8,'12th Pass':0.9,'Diploma':1.0,'Graduate':1.1,'Post Graduate':1.2};
+  let base=20000;
+  const sl=skill.toLowerCase();
+  for(const[k,v] of Object.entries(bases)){if(sl.includes(k)){base=v;break;}}
+  const expBonus=exp*0.1;
+  const total=Math.round(base*(1+expBonus)*(cityMult[city]||1)*(eduMult[edu]||1));
+  const low=Math.round(total*0.85),high=Math.round(total*1.2);
+  document.getElementById('salAmount').textContent=`₹${(total/1000).toFixed(0)}K/month`;
+  document.getElementById('salRange').textContent=`Range: ₹${(low/1000).toFixed(0)}K – ₹${(high/1000).toFixed(0)}K/month`;
+  toast('Salary prediction ready! 💡','success');
+}
+
+// ── FEATURED JOBS ──
+function renderFeatured(){
+  const featured=[...JOBS.filter(j=>j.badge==='featured'),...LIVE_JOBS.slice(0,3)].slice(0,6);
+  renderJobGrid(featured,'featuredGrid');
+}
+
+// ── CHAT ──
+function renderChat(){
+  const l=document.getElementById('chlist');if(!l)return;
+  l.innerHTML=CHATS.map((c,i)=>`<div class="chitem ${i===0?'active':''} ${c.unr>0?'unread-item':''}" onclick="selChat(${i},this)"><div class="chav" style="background:${c.bg};color:#fff;">${c.av}</div><div style="flex:1;min-width:0;"><div class="chn">${c.n}</div><div class="chp">${c.pr}</div></div>${c.unr?`<div class="chunr">${c.unr}</div>`:''}</div>`).join('');
+  loadMsgs(0);
+}
+function selChat(i,el){document.querySelectorAll('.chitem').forEach(x=>x.classList.remove('active'));el.classList.add('active');document.getElementById('chname').textContent=CHATS[i].n;loadMsgs(i);}
+function loadMsgs(i){
+  const c=document.getElementById('chmsgs');if(!c)return;
+  const m=MSGS[i]||[{me:false,t:'Conversation start karo!',tm:'Now'}];
+  c.innerHTML=m.map(x=>`<div><div class="msg ${x.me?'me':'them'}">${x.t}</div><div class="mtime" style="text-align:${x.me?'right':'left'};">${x.tm}</div></div>`).join('');
+  c.scrollTop=c.scrollHeight;
+}
+function sendMsg(){
+  const inp=document.getElementById('chinp');const v=inp.value.trim();if(!v)return;
+  const c=document.getElementById('chmsgs');const d=document.createElement('div');
+  d.innerHTML=`<div class="msg me">${v}</div><div class="mtime" style="text-align:right;">Now</div>`;
+  c.appendChild(d);c.scrollTop=c.scrollHeight;inp.value='';
+  setTimeout(()=>{const r=['Theek hai!','Hum contact karenge.','OK sure!','Kal reply denge.','Great, dekh lenge!'][Math.floor(Math.random()*5)];const rd=document.createElement('div');rd.innerHTML=`<div class="msg them">${r}</div><div class="mtime">Now</div>`;c.appendChild(rd);c.scrollTop=c.scrollHeight;},1200);
+}
+
+// ── AI RESUME ──
+async function buildResume(){
+  const n=document.getElementById('r_n').value.trim(),t=document.getElementById('r_t').value.trim();
+  if(!n||!t){toast('Naam aur Job Title zaroori hai!','error');return;}
+  const btn=document.getElementById('rbtn');btn.disabled=true;btn.textContent='⏳ AI bana raha hai...';
+  const out=document.getElementById('resumeOut');
+  out.innerHTML='<div class="ldots" style="height:200px;"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+  const skills=document.getElementById('r_sk').value;
+  const score=Math.min(95,60+Math.min(skills.split(',').length*5,20)+(document.getElementById('r_ex').value.length>50?10:0)+(document.getElementById('r_ed').value?5:0));
+  const prompt=`Create a professional resume in clean HTML with inline CSS for: Name: ${n}, Title: ${t}, Phone: ${document.getElementById('r_p').value||'N/A'}, Email: ${document.getElementById('r_e').value||'N/A'}, LinkedIn: ${document.getElementById('r_li').value||'N/A'}, City: ${document.getElementById('r_c').value||'India'}, Experience: ${document.getElementById('r_ex').value||'Fresher'}, Skills: ${skills||'N/A'}, Education: ${document.getElementById('r_ed').value||'N/A'}, Languages: ${document.getElementById('r_l').value||'Hindi, English'}, Achievements: ${document.getElementById('r_ach').value||'N/A'}, Summary: ${document.getElementById('r_su').value||'Dedicated professional.'}. Use #FF6B00 as accent color. Professional, clean, ATS-friendly. Include: header with contact, professional summary, experience, skills as colored tags, education, achievements, languages. Only HTML with inline CSS, no markdown or backticks.`;
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,messages:[{role:'user',content:prompt}]})});
+    const d=await r.json();
+    const tx=d.content?.map(c=>c.text||'').join('')||'';
+    out.innerHTML=tx.replace(/```html?|```/g,'').trim()||'<p style="color:red;padding:20px;">Resume generate nahi hua.</p>';
+    // Show score
+    const sb=document.getElementById('scoreBox');const sn=document.getElementById('scoreNum');const sf=document.getElementById('scoreBar');
+    if(sb){sb.style.display='block';sn.textContent=score+'%';sf.style.width=score+'%';}
+    toast(`Resume ready! Score: ${score}% 🎉`,'success');
+  }catch(e){out.innerHTML='<p style="padding:20px;color:red;">Error aaya. Internet check karo ya dobara try karo.</p>';toast('Error aaya.','error');}
+  btn.disabled=false;btn.textContent='🤖 Resume Banao';
+}
+function dlResume(){
+  const h=document.getElementById('resumeOut').innerHTML;
+  if(h.includes('Details bharo')){toast('Pehle resume banao!','error');return;}
+  const w=window.open('','_blank');
+  w.document.write(`<html><head><title>Resume - KaamKro</title><style>body{margin:24px;font-family:sans-serif;}@media print{body{margin:14px;}}</style></head><body>${h}</body></html>`);
+  w.document.close();w.print();toast('Downloading...','success');
+}
+
+// ── PROFILE ──
+function renderProfile(){
+  const skills=['React','Node.js','Python','SQL','Figma','TypeScript'];
+  const st=document.getElementById('profileSkills');
+  if(st)st.innerHTML=skills.map(s=>`<span class="skill-tag">${s}</span>`).join('');
+  const h=document.getElementById('appHist');
+  if(h)h.innerHTML=[{n:'Zomato',r:'Delivery Executive',s:'sh',av:'🛵'},{n:'TechMind',r:'React Developer',s:'new',av:'💻'},{n:'Apollo Hospital',r:'Nurse',s:'rj',av:'🏥'}].map(a=>`<div class="approw"><div class="app-av">${a.av}</div><div><div class="app-n">${a.n}</div><div class="app-r">${a.r}</div></div><span class="app-s ${a.s}">${a.s==='sh'?'Shortlisted':a.s==='rj'?'Rejected':'Applied'}</span></div>`).join('');
+}
+
+// ── DASHBOARD ──
+function renderDash(){
+  // Mini chart
+  const mc=document.getElementById('miniChart');
+  if(mc){const vals=[8,14,9,18,22,16,28];mc.innerHTML=vals.map(v=>`<div class="bar" style="height:${(v/28)*100}%;" title="${v} applications"></div>`).join('');}
+  // Funnel
+  const fc=document.getElementById('funnelChart');
+  if(fc){const steps=[{l:'Applications',v:143,c:'var(--grad)'},{l:'Reviewed',v:89,c:'var(--grad3)'},{l:'Shortlisted',v:34,c:'var(--grad2)'},{l:'Hired',v:12,c:'linear-gradient(135deg,#D97706,#F59E0B)'}];fc.innerHTML=steps.map(s=>`<div class="funnel-row"><div class="funnel-bar" style="width:${(s.v/143)*100}%;background:${s.c};">${s.v}</div><div style="font-size:.72rem;color:var(--mu);">${s.l}</div></div>`).join('');}
+  // Applicants
+  const apps=[{n:'Ravi Sharma',r:'Delivery Executive',s:'new',av:'👦'},{n:'Priya Jain',r:'Content Writer',s:'sh',av:'👩'},{n:'Ahmed Khan',r:'Driver',s:'new',av:'🧔'},{n:'Sunita Devi',r:'Helper',s:'rj',av:'👩‍🦱'},{n:'Karan Mehta',r:'React Developer',s:'sh',av:'👨‍💻'}];
+  const al=document.getElementById('alist');if(al)al.innerHTML=apps.map(a=>`<div class="aitem"><div class="aav">${a.av}</div><div><div class="an">${a.n}</div><div class="ar">${a.r}</div></div><span class="ast ${a.s}">${a.s==='sh'?'Shortlisted':a.s==='rj'?'Rejected':'New'}</span></div>`).join('');
+  const bc=document.getElementById('bchart');if(bc)bc.innerHTML=[{l:'Delivery',v:45},{l:'Driver',v:28},{l:'Helper',v:38},{l:'Dev',v:22}].map(b=>`<div class="br"><div class="brl">${b.l}</div><div class="brbg"><div class="brf" style="width:${b.v}%;"></div></div><div class="brv">${b.v}</div></div>`).join('');
+  const pl=document.getElementById('postedJobsList');if(pl)pl.innerHTML=JOBS.slice(0,3).map(j=>`<div class="aitem"><div class="aav">${j.icon||'💼'}</div><div><div class="an">${j.title}</div><div class="ar">${j.co} • ${j.loc}</div></div><span class="ast sh">Live</span></div>`).join('');
+}
+
+// ── POST JOB ──
+function selP(el,p){selPV=p;document.querySelectorAll('.pc').forEach(x=>x.classList.remove('sel'));el.classList.add('sel');}
+async function submitJob(){
+  const co=document.getElementById('p_co').value.trim(),ti=document.getElementById('p_ti').value.trim(),de=document.getElementById('p_desc').value.trim(),em=document.getElementById('p_em').value.trim();
+  if(!co||!ti||!de||!em){toast('Saare zaroori fields bharo!','error');return;}
+  const cat=document.getElementById('p_cat').value.replace(/[💻🎨📚🛵🔧🏥🍕]\s*/,'');
+  const newJob={id:Date.now(),title:ti,co,icon:ICONS[cat]||'💼',cat,type:document.getElementById('p_type').value,loc:document.getElementById('p_city').value,sal:document.getElementById('p_sal').value||'Negotiable',sk:document.getElementById('p_sk').value.split(',').map(s=>s.trim()).filter(Boolean),badge:'new',status:'live'};
+  JOBS.push(newJob);
+  try{await fetch(`${API}/api/post-job`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({company:co,title:ti,description:de,email:em,plan:selPV})});}catch(e){}
+  addMapMarkers(JOBS);renderFeatured();
+  toast(`✅ "${ti}" live ho gayi! Map pe bhi dikhi 🗺️`,'success');
+}
+
+// ── AUTH ──
+function openModal(tab){document.getElementById('modal').classList.add('open');swTab(tab);}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+function swTab(t){
+  document.getElementById('lform').style.display=t==='login'?'block':'none';
+  document.getElementById('rform').style.display=t==='register'?'block':'none';
+  document.getElementById('lt').classList.toggle('active',t==='login');
+  document.getElementById('rt').classList.toggle('active',t==='register');
+}
+function selRole(r){
+  const j=document.getElementById('rj'),c=document.getElementById('rc');
+  if(r==='job'){j.style.cssText='flex:1;background:#FFF3E8;border:2px solid var(--pr);color:var(--pr);padding:7px;border-radius:7px;cursor:pointer;font-size:.77rem;font-weight:700;';c.style.cssText='flex:1;background:var(--bg);border:2px solid var(--bd2);color:var(--mu);padding:7px;border-radius:7px;cursor:pointer;font-size:.77rem;font-weight:700;';}
+  else{c.style.cssText='flex:1;background:#FFF3E8;border:2px solid var(--pr);color:var(--pr);padding:7px;border-radius:7px;cursor:pointer;font-size:.77rem;font-weight:700;';j.style.cssText='flex:1;background:var(--bg);border:2px solid var(--bd2);color:var(--mu);padding:7px;border-radius:7px;cursor:pointer;font-size:.77rem;font-weight:700;';}
+}
+function doLogin(){if(!document.getElementById('l_e').value.trim()){toast('Email ya phone enter karo!','error');return;}closeModal();toast('Welcome back! Login successful 🎉','success');}
+function doRegister(){const n=document.getElementById('rn').value.trim(),ph=document.getElementById('rph').value.trim(),em=document.getElementById('rem').value.trim(),pw=document.getElementById('rpw').value.trim();if(!n||!ph||!em||!pw){toast('Saare zaroori fields bharo!','error');return;}closeModal();toast(`Welcome ${n}! Account ban gaya 🎉`,'success');}
+function guestAcc(){closeModal();toast('Guest mode mein aa gaye! Explore karo.','info');}
+
+// ── ADMIN ──
+function openAdminPanel(){document.getElementById('adminLogin').classList.add('open');}
+function adminLogin(){
+  const u=document.getElementById('auser').value.trim(),p=document.getElementById('apass').value.trim();
+  if(u===ADMIN_USER&&p===ADMIN_PASS){document.getElementById('adminLogin').classList.remove('open');showSec('admin');renderAdminTables();toast('Admin Panel mein welcome! 🔐','success');}
+  else toast('Wrong username ya password!','error');
+}
+function adminLogout(){showSec('home');toast('Admin logout ho gaya.','info');}
+function adminTab(t,btn){
+  document.querySelectorAll('.admin-sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.anav').forEach(b=>b.classList.remove('active'));
+  const el=document.getElementById('atab-'+t);if(el)el.classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(t==='analytics')renderVisitorAdmin();
+  if(t==='subscribers')renderSubsAdmin();
+}
+function renderAdminTables(){
+  renderAJobs();renderAGovt();renderAUsers();renderVisitorAdmin();renderSubsAdmin();
+  const tj=document.getElementById('a-tj');if(tj)tj.textContent=JOBS.length;
+  // Update subscriber count in overview
+  const subs=JSON.parse(localStorage.getItem(WA_SUB_KEY)||'[]');
+  const subEl=document.getElementById('a-sub-count');if(subEl)subEl.textContent=subs.length;
+}
+function renderAJobs(){
+  const tb=document.getElementById('ajTbody');if(!tb)return;
+  tb.innerHTML=JOBS.map((j,i)=>`<tr><td>${i+1}</td><td><b>${j.title}</b></td><td>${j.co}</td><td>${j.cat}</td><td>${j.loc}</td><td>${j.sal}</td><td>${j.badge?`<span class="tbdg" style="background:#EDE9FE;color:#5B21B6;">${j.badge}</span>`:'-'}</td><td><span class="tbdg ${j.status||'live'}">${(j.status||'live').toUpperCase()}</span></td><td><button class="edit-btn" onclick="editAJob(${j.id})">✏️</button><button class="del-btn" onclick="delAJob(${j.id})">🗑️</button></td></tr>`).join('');
+}
+function renderAGovt(){
+  const tb=document.getElementById('agTbody');if(!tb)return;
+  tb.innerHTML=GOVT.map((g,i)=>`<tr><td>${i+1}</td><td><b>${g.org}</b></td><td>${g.title}</td><td>${g.cat}</td><td>${g.state}</td><td>${g.posts}</td><td style="color:var(--rd);font-weight:700;">${g.date}</td><td>${g.pay}</td><td><button class="del-btn" onclick="delAGovt(${g.id})">🗑️</button></td></tr>`).join('');
+}
+function renderAUsers(){
+  const tb=document.getElementById('auTbody');if(!tb)return;
+  const users=[{n:'Ajaysinh Chavda',e:'achavda035@gmail.com',city:'Ahmedabad',role:'Admin',j:'01 May 2026',s:'Active'},{n:'Rahul Kumar',e:'rahul@gmail.com',city:'Delhi',role:'Job Seeker',j:'28 Apr 2026',s:'Active'},{n:'Priya Sharma',e:'priya@email.com',city:'Mumbai',role:'Job Seeker',j:'27 Apr 2026',s:'Active'},{n:'Zomato India',e:'hr@zomato.com',city:'Bangalore',role:'Company',j:'25 Apr 2026',s:'Active'}];
+  tb.innerHTML=users.map((u,i)=>`<tr><td>${i+1}</td><td><b>${u.n}</b></td><td>${u.e}</td><td>${u.city}</td><td><span class="tbdg" style="background:${u.role==='Admin'?'#EDE9FE;color:#5B21B6':u.role==='Company'?'#FEF3C7;color:#92400E':'#D1FAE5;color:#065F46'};">${u.role}</span></td><td>${u.j}</td><td><span class="tbdg live">${u.s}</span></td><td><button class="del-btn">Block</button></td></tr>`).join('');
+}
+function openAJobForm(id){
+  editJId=null;document.getElementById('ajft').textContent='➕ Naya Job Add Karo';
+  ['aj_title','aj_co','aj_sk'].forEach(x=>document.getElementById(x).value='');
+  document.getElementById('ajform').style.display='block';document.getElementById('ajform').scrollIntoView({behavior:'smooth'});
+}
+function editAJob(id){
+  const j=JOBS.find(x=>x.id===id);if(!j)return;editJId=id;
+  document.getElementById('ajft').textContent='✏️ Job Edit Karo';
+  document.getElementById('aj_title').value=j.title;document.getElementById('aj_co').value=j.co;
+  document.getElementById('aj_cat').value=j.cat;document.getElementById('aj_type').value=j.type;
+  document.getElementById('aj_loc').value=j.loc;document.getElementById('aj_sal').value=j.sal;
+  document.getElementById('aj_badge').value=j.badge||'';document.getElementById('aj_status').value=j.status||'live';
+  document.getElementById('aj_sk').value=(j.sk||[]).join(', ');
+  document.getElementById('ajform').style.display='block';document.getElementById('ajform').scrollIntoView({behavior:'smooth'});
+}
+function saveAdminJob(){
+  const title=document.getElementById('aj_title').value.trim(),co=document.getElementById('aj_co').value.trim();
+  if(!title||!co){toast('Title aur Company zaroori hai!','error');return;}
+  const cat=document.getElementById('aj_cat').value;
+  const data={title,co,icon:ICONS[cat]||'💼',cat,type:document.getElementById('aj_type').value,loc:document.getElementById('aj_loc').value,sal:document.getElementById('aj_sal').value,badge:document.getElementById('aj_badge').value,status:document.getElementById('aj_status').value,sk:document.getElementById('aj_sk').value.split(',').map(s=>s.trim()).filter(Boolean)};
+  if(editJId){const i=JOBS.findIndex(x=>x.id===editJId);if(i>-1)JOBS[i]={...JOBS[i],...data};toast('Job update ho gayi! ✅','success');}
+  else{JOBS.push({id:Date.now(),...data});toast('Naya job add! ✅','success');}
+  renderLocalJobs();renderAJobs();const tj=document.getElementById('a-tj');if(tj)tj.textContent=JOBS.length;
+  document.getElementById('ajform').style.display='none';editJId=null;
+}
+function delAJob(id){if(!confirm('Delete karna chahte ho?'))return;JOBS=JOBS.filter(j=>j.id!==id);renderLocalJobs();renderAJobs();toast('Job delete ho gayi!','success');}
+function saveAdminGovt(){
+  const org=document.getElementById('ag_org').value.trim(),title=document.getElementById('ag_title').value.trim();
+  if(!org||!title){toast('Org aur Title zaroori hai!','error');return;}
+  GOVT.push({id:Date.now(),org,title,cat:document.getElementById('ag_cat').value,state:document.getElementById('ag_state').value,posts:document.getElementById('ag_posts').value,date:document.getElementById('ag_date').value,pay:document.getElementById('ag_pay').value});
+  renderGovt(GOVT);renderAGovt();toast('Govt job add ho gayi! ✅','success');
+  document.getElementById('agform').style.display='none';
+}
+function delAGovt(id){if(!confirm('Delete karna chahte ho?'))return;GOVT=GOVT.filter(g=>g.id!==id);renderGovt(GOVT);renderAGovt();toast('Govt job delete ho gayi!','success');}
+
+// ── SEARCH ──
+function updCities(){
+  const c=document.getElementById('hctry').value,ci=document.getElementById('hcity');
+  const cities=CITIES[c]||CITIES.india;
+  ci.innerHTML=`<option>📍 Sab Cities</option>`+cities.map(x=>`<option>${x}</option>`).join('');
+}
+function doSearch(){
+  const q=document.getElementById('hs').value.trim();
+  const ctry=document.getElementById('hctry').value;
+  showSec('jobs');
+  if(q){document.getElementById('jsrch').value=q;}
+  if(ctry!=='india'&&ctry!=='remote'){const el=document.getElementById('jctry');if(el)el.value=ctry;}
+  filterJobs();if(q)toast(`"${q}" search ho rahi hai...`,'info');
+}
+function qs(q){showSec('jobs');document.getElementById('jsrch').value=q;filterJobs();}
+
+// ── TOAST ──
+function toast(msg,type='info'){
+  const c=document.getElementById('toast');const d=document.createElement('div');
+  d.className=`ti ${type}`;d.innerHTML=`<span>${type==='success'?'✅':type==='error'?'❌':'ℹ️'}</span><span>${msg}</span>`;
+  c.appendChild(d);setTimeout(()=>{d.style.opacity='0';d.style.transition='opacity .3s';setTimeout(()=>d.remove(),300);},4000);
+}
+
+// ── LIVE API STATS ──
+async function fetchStats(){
+  try{
+    const r=await fetch(`${API}/api/stats`,{signal:AbortSignal.timeout(5000)});if(!r.ok)return;
+    const d=await r.json();
+    if(d.totalUsers){const e=document.getElementById('sU');if(e)e.textContent=fmt(d.totalUsers);}
+    if(d.totalJobs){const e=document.getElementById('sJ');if(e)e.textContent=fmt(d.totalJobs);const lj=document.getElementById('liveJobCount');if(lj)lj.textContent=fmt(d.totalJobs);}
+    if(d.cities||d.totalCities){const e=document.getElementById('sCities');if(e)e.textContent=fmt(d.cities||d.totalCities);}
+  }catch(e){
+    document.getElementById('sU').textContent='50K+';
+    document.getElementById('sJ').textContent='10K+';
+    document.getElementById('sCities').textContent='50+';
+  }
+}
+function fmt(n){return n>=1000?(n/1000).toFixed(0)+'K+':n+'+';}
+
+// ── WHATSAPP ALERT SYSTEM ──
+const WA_SUB_KEY='kaamkro_wa_subs';
+let waSelectedType='';
+let waCurrentStep=1;
+
+function openWhatsAppAlert(preType){
+  waSelectedType='';waCurrentStep=1;
+  resetWAModal();
+  document.getElementById('waModal').style.display='flex';
+  document.body.style.overflow='hidden';
+  if(preType==='govt'){selectWAType('govt');}
+  else if(preType==='private'){selectWAType('private');}
+  else if(preType==='both'){selectWAType('both');}
+}
+function closeWAModal(){
+  document.getElementById('waModal').style.display='none';
+  document.body.style.overflow='';
+}
+document.getElementById('waModal').addEventListener('click',function(e){if(e.target===this)closeWAModal();});
+
+function resetWAModal(){
+  ['waStep1','waStep2','waStep3','waSuccess'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.style.display='none';
+  });
+  document.getElementById('waStep1').style.display='block';
+  // reset chips
+  document.querySelectorAll('.wa-chip').forEach(c=>c.classList.remove('on'));
+  document.querySelectorAll('.wa-type-card').forEach(c=>c.classList.remove('selected'));
+  const btn=document.getElementById('waBtn1');if(btn)btn.disabled=true;
+  const num=document.getElementById('wa_number');if(num)num.value='';
+  const nm=document.getElementById('wa_name');if(nm)nm.value='';
+  setWAStep(1);
+}
+
+function setWAStep(n){
+  waCurrentStep=n;
+  ['wstep1','wstep2','wstep3'].forEach((id,i)=>{
+    const el=document.getElementById(id);
+    if(el)el.classList.toggle('active',i+1<=n);
+  });
+}
+
+function selectWAType(type){
+  waSelectedType=type;
+  document.querySelectorAll('.wa-type-card').forEach(c=>c.classList.remove('selected'));
+  const map={govt:'wt-govt',private:'wt-private',both:'wt-both'};
+  const el=document.getElementById(map[type]);if(el)el.classList.add('selected');
+  const btn=document.getElementById('waBtn1');if(btn)btn.disabled=false;
+}
+
+function toggleChip(el,group){el.classList.toggle('on');}
+function toggleChipAll(group){
+  const all=document.querySelectorAll('.wa-chip.wa-chip-all');
+  all.forEach(a=>{
+    const parent=a.parentElement;
+    const chips=parent.querySelectorAll('.wa-chip:not(.wa-chip-all)');
+    const isOn=a.classList.toggle('on');
+    chips.forEach(c=>isOn?c.classList.add('on'):c.classList.remove('on'));
+  });
+}
+
+function waNext(fromStep){
+  if(fromStep===1){
+    if(!waSelectedType){toast('Pehle job type chuniye!','error');return;}
+    document.getElementById('waStep1').style.display='none';
+    document.getElementById('waStep2').style.display='block';
+    // Show relevant fields
+    document.getElementById('waGovtFields').style.display=(waSelectedType==='govt'||waSelectedType==='both')?'block':'none';
+    document.getElementById('waPrivateFields').style.display=(waSelectedType==='private'||waSelectedType==='both')?'block':'none';
+    setWAStep(2);
+  } else if(fromStep===2){
+    const city=document.getElementById('wa_city').value;
+    if(!city){toast('City chuniye!','error');return;}
+    // Build preview
+    const typeLabel=waSelectedType==='govt'?'🏛️ Sarkari Naukri':waSelectedType==='private'?'💼 Private Jobs':'🏛️ Sarkari + 💼 Private Jobs';
+    const name=document.getElementById('wa_name').value||'Aap';
+    const govtChips=[...document.querySelectorAll('#waGovtCats .wa-chip.on')].map(c=>c.textContent).join(', ')||'Sab';
+    const privChips=[...document.querySelectorAll('.wa-chip.on:not(.wa-chip-all):not(#waGovtCats .wa-chip)')].map(c=>c.textContent).join(', ')||'Sab';
+    const qual=document.getElementById('wa_qual')?.value||'';
+    const sal=document.getElementById('wa_sal')?.value||'';
+    let prev=`• Job Type: ${typeLabel}\n• City: ${city}`;
+    if(waSelectedType==='govt'||waSelectedType==='both')prev+=`\n• Govt Category: ${govtChips}${qual?'\n• Qualification: '+qual:''}`;
+    if(waSelectedType==='private'||waSelectedType==='both')prev+=`\n• Job Category: ${privChips}${sal?'\n• Expected Salary: '+sal:''}`;
+    const preEl=document.getElementById('waPreview');
+    if(preEl)preEl.innerHTML=prev.split('\n').map(l=>`<div>${l}</div>`).join('');
+    document.getElementById('waStep2').style.display='none';
+    document.getElementById('waStep3').style.display='block';
+    setWAStep(3);
+  }
+}
+function waBack(fromStep){
+  if(fromStep===2){document.getElementById('waStep2').style.display='none';document.getElementById('waStep1').style.display='block';setWAStep(1);}
+  else if(fromStep===3){document.getElementById('waStep3').style.display='none';document.getElementById('waStep2').style.display='block';setWAStep(2);}
+}
+
+function submitWAAlert(){
+  const num=document.getElementById('wa_number').value.trim();
+  if(!num||num.length!==10){toast('Valid 10-digit WhatsApp number do!','error');return;}
+  if(!/^[6-9]/.test(num)){toast('Valid Indian mobile number do!','error');return;}
+
+  const name=document.getElementById('wa_name').value.trim()||'Subscriber';
+  const city=document.getElementById('wa_city').value||'India';
+  const freq=document.querySelector('input[name="waFreq"]:checked')?.value||'daily';
+  const qual=document.getElementById('wa_qual')?.value||'';
+  const sal=document.getElementById('wa_sal')?.value||'';
+  const govtCats=[...document.querySelectorAll('#waGovtCats .wa-chip.on')].map(c=>c.textContent.trim()).join(',');
+  const privCats=[...document.querySelectorAll('.wa-chip.on:not(.wa-chip-all):not(#waGovtCats .wa-chip)')].map(c=>c.textContent.trim()).join(',');
+
+  // Save subscriber
+  const subs=JSON.parse(localStorage.getItem(WA_SUB_KEY)||'[]');
+  const newSub={
+    id:subs.length+1,
+    name,
+    phone:'+91'+num,
+    type:waSelectedType,
+    govtCats:govtCats||'Sab',
+    privCats:privCats||'Sab',
+    city,qual,sal,freq,
+    joined:new Date().toLocaleDateString('en-IN'),
+    status:'Active'
+  };
+  subs.unshift(newSub);
+  localStorage.setItem(WA_SUB_KEY,JSON.stringify(subs));
+
+  // Build WhatsApp message and open
+  const msg=buildWAMessage(newSub);
+  const waURL=`https://wa.me/91${num}?text=${encodeURIComponent(msg)}`;
+
+  // Show success
+  document.getElementById('waStep3').style.display='none';
+  document.getElementById('waSuccess').style.display='block';
+  const typeLabel=waSelectedType==='govt'?'Sarkari Naukri':waSelectedType==='private'?'Private Jobs':'Sarkari + Private Jobs';
+  document.getElementById('waSuccessMsg').innerHTML=`<b>${name}</b> ka ${typeLabel} alert set ho gaya!<br>📍 ${city} • 🔔 ${freq==='daily'?'Roz':freq==='weekly'?'Hafte mein':'Instant'} alerts`;
+  document.getElementById('waWelcomeMsg').innerHTML=`<b>📲 Abhi WhatsApp pe click karo:</b><br><br>
+    ✅ Welcome message + first job list milegi<br>
+    ✅ ${freq==='daily'?'Kal subah 9 baje':freq==='weekly'?'Har Somwar':''} se regular alerts shuru<br>
+    ✅ Unsubscribe ke liye "STOP" type karo`;
+
+  // Open WhatsApp with welcome message
+  setTimeout(()=>window.open(waURL,'_blank'),600);
+  toast(`Welcome ${name}! WhatsApp pe message ja raha hai 📲`,'success');
+  // Refresh admin overview if open
+  renderSubsAdmin();
+}
+
+function buildWAMessage(sub){
+  const typeEmoji=sub.type==='govt'?'🏛️':sub.type==='private'?'💼':'🏛️💼';
+  let msg=`🙏 *Namaste ${sub.name}!*\n\n`;
+  msg+=`⚡ *KaamKro Job Alert* — Aapka subscription confirm ho gaya!\n`;
+  msg+=`${'─'.repeat(30)}\n\n`;
+
+  if(sub.type==='govt'||sub.type==='both'){
+    msg+=`🏛️ *SARKARI NAUKRI ALERTS*\n`;
+    msg+=`📋 Category: ${sub.govtCats}\n`;
+    if(sub.qual)msg+=`🎓 Qualification: ${sub.qual}\n`;
+    msg+=`📍 City: ${sub.city}\n\n`;
+    msg+=`🔥 *Latest Sarkari Jobs:*\n`;
+    msg+=`• SSC CGL 2025 — 17,727 posts | ₹25,500–₹81,100 | Last: 31 May 2025\n`;
+    msg+=`• Railway NTPC 2025 — 11,558 posts | ₹19,900–₹35,400 | Last: 15 Jun\n`;
+    msg+=`• SBI Clerk 2025 — 13,735 posts | ₹17,900–₹47,920 | Last: 28 May\n`;
+    msg+=`• India Post GDS — 44,228 posts | ₹12,000–₹29,380 | Last: 25 May\n\n`;
+    msg+=`🔗 Sabhi govt jobs: https://kaamkro.com\n\n`;
+  }
+
+  if(sub.type==='private'||sub.type==='both'){
+    msg+=`💼 *PRIVATE JOB ALERTS*\n`;
+    msg+=`🏷️ Category: ${sub.privCats}\n`;
+    if(sub.sal)msg+=`💰 Expected: ${sub.sal}\n`;
+    msg+=`📍 City: ${sub.city}\n\n`;
+    msg+=`🔥 *Latest Private Jobs (${sub.city}):*\n`;
+    msg+=`• React Developer — TechMind | ₹60K–₹90K/mo | Bangalore\n`;
+    msg+=`• Delivery Executive — Zomato | ₹18K–₹25K/mo | Delhi\n`;
+    msg+=`• Content Writer — ContentKing | WFH | ₹15K–₹30K/mo\n`;
+    msg+=`• Graphic Designer — CreativeHub | Freelance | ₹20K–₹40K/mo\n\n`;
+    msg+=`🔗 Sabhi private jobs: https://kaamkro.com\n\n`;
+  }
+
+  msg+=`${'─'.repeat(30)}\n`;
+  msg+=`🔔 *Alert Frequency:* ${sub.freq==='daily'?'Roz subah 9 baje':sub.freq==='weekly'?'Har Somwar':'Turant (New jobs milte hi)'}\n\n`;
+  msg+=`📌 *Tips:*\n`;
+  msg+=`• Is number ko save karo: Job Alerts aate rahenge\n`;
+  msg+=`• "STOP" type karo unsubscribe ke liye\n`;
+  msg+=`• "HELP" type karo support ke liye\n\n`;
+  msg+=`💪 *Best of luck ${sub.name}!*\n`;
+  msg+=`— Team KaamKro 🇮🇳`;
+  return msg;
+}
+
+// Admin subscriber functions
+function renderSubsAdmin(){
+  const subs=JSON.parse(localStorage.getItem(WA_SUB_KEY)||'[]');
+  const ss=document.getElementById('subStats');
+  if(ss){
+    const govt=subs.filter(s=>s.type==='govt').length;
+    const priv=subs.filter(s=>s.type==='private').length;
+    const both=subs.filter(s=>s.type==='both').length;
+    ss.innerHTML=`
+      <div class="astat"><div class="astat-num" style="color:#25D366;">${subs.length}</div><div class="astat-lbl">Total Subscribers</div></div>
+      <div class="astat"><div class="astat-num" style="color:var(--gn);">${govt}</div><div class="astat-lbl">🏛️ Sarkari Alerts</div></div>
+      <div class="astat"><div class="astat-num" style="color:var(--pr);">${priv}</div><div class="astat-lbl">💼 Private Alerts</div></div>
+      <div class="astat"><div class="astat-num" style="color:var(--pu);">${both}</div><div class="astat-lbl">⭐ Both Alerts</div></div>
+      <div class="astat"><div class="astat-num">${subs.filter(s=>s.status==='Active').length}</div><div class="astat-lbl">Active</div></div>
+      <div class="astat"><div class="astat-num">${subs.filter(s=>s.freq==='daily').length}</div><div class="astat-lbl">📅 Daily Alerts</div></div>
+    `;
+  }
+  // Update overview sub count
+  const sc=document.getElementById('a-sub-count');if(sc)sc.textContent=subs.length;
+  // Update breakdown in overview
+  const bd=document.getElementById('subTypeBreakdown');
+  if(bd){
+    const govt2=subs.filter(s=>s.type==='govt'||s.type==='both').length;
+    const priv2=subs.filter(s=>s.type==='private'||s.type==='both').length;
+    bd.innerHTML=`
+      <span style="background:rgba(0,135,90,.1);color:var(--gn);padding:3px 9px;border-radius:8px;font-size:.7rem;font-weight:700;">🏛️ Sarkari: ${govt2}</span>
+      <span style="background:rgba(255,107,0,.1);color:var(--pr);padding:3px 9px;border-radius:8px;font-size:.7rem;font-weight:700;">💼 Private: ${priv2}</span>
+      <span style="background:rgba(37,211,102,.1);color:#128C7E;padding:3px 9px;border-radius:8px;font-size:.7rem;font-weight:700;">📲 Total: ${subs.length}</span>
+    `;
+  }
+  // Show latest subscriber in activity
+  if(subs.length>0){
+    const latest=subs[0];
+    const lr=document.getElementById('latestSubRow');if(lr)lr.style.display='flex';
+    const ln=document.getElementById('latestSubName');if(ln)ln.textContent=latest.name+' ('+latest.phone+')';
+    const li=document.getElementById('latestSubInfo');if(li)li.textContent=(latest.type==='govt'?'🏛️ Sarkari':latest.type==='private'?'💼 Private':'⭐ Both')+' • '+latest.city+' • '+latest.joined;
+  }
+  renderSubTable(subs);
+}
+function renderSubTable(subs){
+  const tb=document.getElementById('subTbody');if(!tb)return;
+  if(!subs.length){tb.innerHTML='<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--mu);">Koi subscriber nahi abhi. WhatsApp Alert button se log subscribe karenge! 📲</td></tr>';return;}
+  tb.innerHTML=subs.map((s,i)=>`<tr>
+    <td>${i+1}</td>
+    <td><b>${s.name}</b></td>
+    <td><a href="https://wa.me/${s.phone.replace('+','')}" target="_blank" style="color:#25D366;font-weight:700;text-decoration:none;">📲 ${s.phone}</a></td>
+    <td><span class="tbdg" style="background:${s.type==='govt'?'rgba(0,135,90,.1);color:var(--gn)':s.type==='private'?'rgba(255,107,0,.1);color:var(--pr)':'rgba(124,58,237,.1);color:var(--pu)'};">${s.type==='govt'?'🏛️ Sarkari':s.type==='private'?'💼 Private':'⭐ Both'}</span></td>
+    <td style="font-size:.7rem;max-width:140px;overflow:hidden;text-overflow:ellipsis;">${s.type==='govt'?s.govtCats:s.type==='private'?s.privCats:(s.govtCats+' | '+s.privCats)}</td>
+    <td>${s.city}</td>
+    <td><span style="font-size:.7rem;font-weight:600;">${s.freq==='daily'?'📅 Roz':s.freq==='weekly'?'📆 Weekly':'⚡ Instant'}</span></td>
+    <td style="font-size:.7rem;">${s.joined}</td>
+    <td>
+      <a href="https://wa.me/${s.phone.replace('+','')}?text=${encodeURIComponent('Hello '+s.name+'! KaamKro se aapke liye latest job updates hain 👇')}" target="_blank" style="background:linear-gradient(135deg,#25D366,#128C7E);border:none;color:#fff;padding:3px 9px;border-radius:5px;cursor:pointer;font-size:.66rem;font-weight:700;text-decoration:none;display:inline-block;margin-right:3px;">📲 Send</a>
+      <button onclick="deleteSub(${s.id})" class="del-btn">🗑️</button>
+    </td>
+  </tr>`).join('');
+}
+function filterSubs(type){
+  const subs=JSON.parse(localStorage.getItem(WA_SUB_KEY)||'[]');
+  renderSubTable(type==='all'?subs:subs.filter(s=>s.type===type||s.type==='both'));
+}
+function deleteSub(id){
+  if(!confirm('Is subscriber ko delete karna chahte ho?'))return;
+  let subs=JSON.parse(localStorage.getItem(WA_SUB_KEY)||'[]');
+  subs=subs.filter(s=>s.id!==id);
+  localStorage.setItem(WA_SUB_KEY,JSON.stringify(subs));
+  renderSubsAdmin();toast('Subscriber delete ho gaya!','success');
+}
+function exportSubs(){
+  const subs=JSON.parse(localStorage.getItem(WA_SUB_KEY)||'[]');
+  if(!subs.length){toast('Koi subscriber nahi abhi!','error');return;}
+  const csv=['Name,Phone,Type,Preferences,City,Qualification,Salary,Frequency,Joined',...subs.map(s=>`"${s.name}","${s.phone}","${s.type}","${s.type==='govt'?s.govtCats:s.privCats}","${s.city}","${s.qual||''}","${s.sal||''}","${s.freq}","${s.joined}"`)].join('\n');
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='kaamkro_wa_subscribers_'+new Date().toLocaleDateString('en').replace(/\//g,'-')+'.csv';a.click();
+  toast('CSV download ho rahi hai! 📥','success');
+}
+function sendBulkWA(){
+  const subs=JSON.parse(localStorage.getItem(WA_SUB_KEY)||'[]');
+  if(!subs.length){toast('Koi subscriber nahi abhi!','error');return;}
+  const msg=`🔔 *KaamKro Job Alert* 🇮🇳\n\n🔥 Aaj ki latest jobs:\n\n🏛️ SSC CGL 2025 — 17,727 posts | Last: 31 May\n💼 React Dev — TechMind | ₹60K–₹90K\n🛵 Delivery — Zomato | ₹18K–₹25K\n📚 Teacher — Delhi PS | ₹30K–₹45K\n\n👉 Sabhi jobs dekho: https://kaamkro.com\n\n_Unsubscribe ke liye STOP type karo_`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`,'_blank');
+  toast(`Bulk message ready! ${subs.length} subscribers ke liye open hua`,'success');
+}
+
+// ── VISITOR TRACKING ──
+const VK='kaamkro_visitors';
+const SK='kaamkro_sessions';
+const LK='kaamkro_log';
+
+function getDevice(){
+  const ua=navigator.userAgent;
+  if(/Mobi|Android/i.test(ua))return'📱 Mobile';
+  if(/iPad|Tablet/i.test(ua))return'📟 Tablet';
+  return'💻 Desktop';
+}
+function getCity(){
+  const cities=['Delhi','Mumbai','Bangalore','Hyderabad','Pune','Chennai','Kolkata','Ahmedabad','Jaipur','Lucknow','Surat','Noida'];
+  return cities[Math.floor(Math.random()*cities.length)];
+}
+function getSource(){
+  const s=['Direct','Google','Facebook','WhatsApp','Instagram','Twitter'][Math.floor(Math.random()*6)];
+  return s;
+}
+function getPage(){
+  const pages=['Home','Jobs','Sarkari Jobs','Map Jobs','AI Resume','Profile','Premium','Ads','Post Job'][Math.floor(Math.random()*9)];
+  return pages;
+}
+
+function initVisitorTracking(){
+  // Get/set session
+  let sessions=JSON.parse(localStorage.getItem(SK)||'{}');
+  const today=new Date().toDateString();
+  const sessionId='s_'+Date.now()+'_'+Math.random().toString(36).substr(2,6);
+
+  // Load existing data
+  let vdata=JSON.parse(localStorage.getItem(VK)||'{"total":0,"today":0,"week":{},"lastDate":""}');
+  let log=JSON.parse(localStorage.getItem(LK)||'[]');
+
+  // Reset today count if new day
+  if(vdata.lastDate!==today){vdata.today=0;vdata.lastDate=today;}
+
+  // Increment
+  vdata.total+=1;
+  vdata.today+=1;
+  if(!vdata.week)vdata.week={};
+  vdata.week[today]=(vdata.week[today]||0)+1;
+
+  // Keep only last 7 days in week
+  const keys=Object.keys(vdata.week);
+  if(keys.length>7){delete vdata.week[keys[0]];}
+
+  // Add log entry
+  const entry={
+    id:log.length+1,
+    time:new Date().toLocaleString('hi-IN'),
+    page:getPage(),
+    city:getCity(),
+    device:getDevice(),
+    duration:Math.floor(Math.random()*8+1)+'m '+Math.floor(Math.random()*60)+'s',
+    source:getSource(),
+    sessionId
+  };
+  log.unshift(entry);
+  if(log.length>200)log=log.slice(0,200);// keep last 200
+
+  // Save
+  localStorage.setItem(VK,JSON.stringify(vdata));
+  localStorage.setItem(LK,JSON.stringify(log));
+
+  // Update live count on hero
+  const lv=document.getElementById('liveVisitors');
+  if(lv)lv.textContent=Math.floor(Math.random()*18+3);// simulated concurrent
+}
+
+function renderVisitorAdmin(){
+  const vdata=JSON.parse(localStorage.getItem(VK)||'{"total":0,"today":0,"week":{}}');
+  const log=JSON.parse(localStorage.getItem(LK)||'[]');
+
+  // Stats cards
+  const vs=document.getElementById('visitorStats');
+  if(vs){
+    const yesterday=vdata.today>0?Math.max(0,vdata.today-Math.floor(Math.random()*5)):0;
+    const weekTotal=Object.values(vdata.week||{}).reduce((s,v)=>s+v,0);
+    vs.innerHTML=`
+      <div class="astat"><div class="astat-num" style="color:var(--bl);">${vdata.total.toLocaleString()}</div><div class="astat-lbl">Total Visitors</div></div>
+      <div class="astat"><div class="astat-num" style="color:var(--gn);">${vdata.today}</div><div class="astat-lbl">Aaj ke Visitors</div></div>
+      <div class="astat"><div class="astat-num" style="color:var(--pr);">${weekTotal}</div><div class="astat-lbl">Is Hafte</div></div>
+      <div class="astat"><div class="astat-num">${log.length}</div><div class="astat-lbl">Total Sessions</div></div>
+      <div class="astat"><div class="astat-num">${Math.floor(Math.random()*4+2)}m</div><div class="astat-lbl">Avg. Time on Site</div></div>
+      <div class="astat"><div class="astat-num">${Math.floor(Math.random()*30+40)}%</div><div class="astat-lbl">Bounce Rate</div></div>
+    `;
+  }
+
+  // Daily chart (last 7 days)
+  const vc=document.getElementById('visitorChart');
+  if(vc){
+    const week=vdata.week||{};
+    const days=[];
+    for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);days.push({label:d.toLocaleDateString('en',{weekday:'short'}),val:week[d.toDateString()]||Math.floor(Math.random()*15+2)});}
+    const maxV=Math.max(...days.map(d=>d.val),1);
+    vc.innerHTML=`<div style="display:flex;align-items:flex-end;gap:5px;height:60px;">${days.map(d=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;"><div style="background:var(--grad3);border-radius:3px 3px 0 0;width:100%;height:${Math.max((d.val/maxV)*56,4)}px;transition:height .3s;" title="${d.val} visitors"></div><div style="font-size:.58rem;color:var(--mu);">${d.label}</div></div>`).join('')}</div>`;
+  }
+
+  // Device breakdown
+  const dc=document.getElementById('deviceChart');
+  if(dc){
+    const dev=[{l:'📱 Mobile',p:62,c:'var(--pr)'},{l:'💻 Desktop',p:28,c:'var(--bl)'},{l:'📟 Tablet',p:10,c:'var(--gn)'}];
+    dc.innerHTML=dev.map(d=>`<div class="br"><div class="brl" style="font-size:.7rem;">${d.l}</div><div class="brbg"><div class="brf" style="width:${d.p}%;background:${d.c};"></div></div><div class="brv">${d.p}%</div></div>`).join('');
+  }
+
+  // Top cities
+  const cc=document.getElementById('cityChart');
+  if(cc){
+    const cities=['Delhi','Mumbai','Bangalore','Hyderabad','Pune','Chennai','Ahmedabad'];
+    const vals=[22,18,15,12,10,9,8];
+    cc.innerHTML=cities.map((c,i)=>`<div class="br"><div class="brl" style="font-size:.7rem;">${c}</div><div class="brbg"><div class="brf" style="width:${vals[i]/22*100}%;"></div></div><div class="brv">${vals[i]}%</div></div>`).join('');
+  }
+
+  // Top pages
+  const pc=document.getElementById('pageChart');
+  if(pc){
+    const pages=[{l:'Home',v:35},{l:'Jobs',v:28},{l:'Sarkari',v:18},{l:'AI Resume',v:11},{l:'Map Jobs',v:8}];
+    pc.innerHTML=pages.map(p=>`<div class="br"><div class="brl" style="font-size:.7rem;">${p.l}</div><div class="brbg"><div class="brf" style="width:${p.v/35*100}%;background:var(--grad2);"></div></div><div class="brv">${p.v}%</div></div>`).join('');
+  }
+
+  // Log table
+  const lb=document.getElementById('visitorLogBody');
+  if(lb){
+    lb.innerHTML=log.slice(0,50).map((e,i)=>`<tr>
+      <td>${e.id}</td>
+      <td style="font-size:.68rem;white-space:nowrap;">${e.time}</td>
+      <td><span style="background:#F0F4FF;padding:2px 7px;border-radius:5px;font-size:.68rem;font-weight:600;">${e.page}</span></td>
+      <td>${e.city}</td>
+      <td>${e.device}</td>
+      <td style="color:var(--gn);font-weight:600;">${e.duration}</td>
+      <td><span style="background:#FFF3E8;padding:2px 7px;border-radius:5px;font-size:.68rem;color:var(--pr);font-weight:600;">${e.source}</span></td>
+    </tr>`).join('');
+  }
+}
+
+function clearVisitorLog(){
+  if(!confirm('Log clear karna chahte ho?'))return;
+  localStorage.removeItem(LK);
+  renderVisitorAdmin();
+  toast('Visitor log clear ho gaya!','success');
+}
+
+// ─────────── INIT ───────────
+function init(){
+  renderCats();renderGovt(GOVT);renderChat();renderDash();renderFeatured();renderNotifs();renderProfile();
+  fetchStats();loadLiveJobs();startGovtTimer();
+  setTimeout(()=>renderMapList(JOBS),500);
+  initVisitorTracking();
+}
+init();
+</script>
+</body>
+</html>
